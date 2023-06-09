@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>警情警力分析</title>
+        <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+        <script src="js/echarts.min.js" charset="utf-8"></script>
+        <script src="js/echart3.js"></script>
+        <script type="text/javascript"
+            src="https://assets.pyecharts.org/assets/echarts-wordcloud.min.js"></script>
+        <!-- <script type="text/javascript"
+            src="https://assets.pyecharts.org/assets/themes/.wonderlandjs"></script> -->
+        <!-- <script src="./china.json"></script> -->
+    </head>
+
+    <body>
+        <div class="wpbox">
+            <div class="bnt">
+                <div class="topbnt_left fl">
+                    <ul>
+                        <li class="active">警情警力</li>
+
+                    </ul>
+                </div>
+                <h1 class="tith1 fl">舆情分析</h1>
+            </div>
+            <!-- bnt end -->
+            <div class="left1">
+                <div class="aleftboxttop">
+                    <h2 class="tith2">七日舆情数据统计</h2>
+                    <div class="lefttoday_number">
+                        <div id="main" style="height: 249px; width: 249px;"></div>
+                    </div>
+                </div>
+                <div class="aleftboxtmidd">
+                    <h2 class="tith2">七日舆情类型图</h2>
+                    <div id="aleftboxtmidd"
+                        style="height: 370px; width: 240px; "></div>
+                </div>
+                <div class="aleftboxtbott">
+                    <h2 class="tith2">虚假舆情占比</h2>
+                    <div id="aleftboxtbott"
+                        style="height: 300px; width: 230px; margin-top: 15px;"></div>
+                </div>
+            </div>
+            <!--  left1 end -->
+            <div class="mrbox">
+                <div class="mrbox_topmidd" style="width: 69%;">
+                    <div class="amiddboxttop">
+                        <h2 class="tith2 pt1">实时监控统计</h2>
+                        <div class="amiddboxttop_map" style>
+                            <div id="mainn" style="width: 600px; height: 600px"></div>
+                        </div>
+                    </div>
+                    <!--  amiddboxttop end-->
+                    <div class="amidd_bott">
+                        <div class="amiddboxtbott1 fl">
+                            <h2 class="tith2 pt1">矛盾纠纷环比分析</h2>
+                            <div id="amiddboxtbott1"
+                                class="amiddboxtbott1content"></div>
+                        </div>
+                    </div>
+                    <!-- amidd_bott end -->
+                </div>
+                <!-- mrbox_top end -->
+                <div class="mrbox_top_right">
+                    <div class="arightboxtop">
+                        <h2 class="tith2">警力分析</h2>
+                        <div class="left2_table">
+                            <div id="cloud"
+                                style="height: 450px; width: 300px;color: #fff;"></div>
+                        </div>
+
+                    </div>
+                    <div class="arightboxbott">
+                        <h2 class="tith2 ">矛盾纠纷七日数据分析</h2>
+                        <div class="lefttoday_tit">
+                            <p class="fl">状态：已调节</p>
+                            <p class="fr">时间：2018-06-14</p>
+                        </div>
+                        <div id="arightboxbott" class="arightboxbottcont" style></div>
+                    </div>
+                </div>
+                <!-- mrbox_top_right end -->
+
+            </div>
+        </div>
+
+        <script>
+		//基于准备好的dom，初始化ECharts图表
+		var myChart = echarts.init(document.getElementById("cloud"));
+		var option = {  //指定图表的配置项和数据
+			backgroundColor: 'rgba(128, 128, 128, 0.1)',  //rgba设置透明度0.1
+			title: {  //配置标题组件
+				text: '舆情词云',
+				x: 'center', y: 15,
+				textStyle: {
+					color: 'green', fontSize: 22,
+				}
+			},
+			tooltip: { show: true },  //配置提示框组件
+			series: [{  //数据系列及其配置
+				name: '舆情词云',  //设置名称
+				type: 'wordCloud',  //设置图表类型为字云图
+				sizeRange: [15, 100],  //设置数据大小范围
+				size: ['80%', '80%'],  //设置显示的字云图的大小
+				textRotation: [0, 45, 90, 135, -45, -90],  //设置文字倾斜角度
+				textPadding: 3,  //设置文字之间的间距
+				autoSize: { enable: true, minSize: 5 },  //设置文字的自动大小
+				textStyle: {
+					normal: {
+						color: function () {
+							return 'rgb(' + [
+								Math.round(Math.random() * 255),
+								Math.round(Math.random() * 255),
+								Math.round(Math.random() * 255)
+							].join(',') + ')';
+						}
+					},
+					emphasis: {
+						shadowBlur: 26,
+						color: '#333',
+						shadowColor: '#ccc',
+						fontSize: 20
+					}
+				},
+				data: [  //设置具体的数据
+					{ name: "Java", value: 16884 }, { name: "C", value: 16180 },
+					{ name: "Python", value: 9089 }, { name: "C++", value: 6229 },
+					{ name: "C#", value: 3860 }, { name: "VB.NET", value: 3745 },
+					{ name: "Ruby", value: 1318 }, { name: "Assembly", value: 1307 },
+					{ name: "R", value: 1261 }, { name: "Delphi", value: 1046 },
+					{ name: "VB", value: 1234 }, { name: "Go", value: 1100 },
+					{ name: "Delphi", value: 1046 }, { name: "SAS", value: 915 },
+					{ name: "Perl", value: 1023 }, { name: "Matlab", value: 924 },
+					{ name: "PL/SQL", value: 822 }, { name: "D", value: 814 },
+					{ name: "Scheme", value: 193 }, { name: "COBEL", value: 447 },
+					{ name: "Scratch", value: 524 }, { name: "Dart", value: 448 },
+					{ name: "ABAP", value: 447 }, { name: "Scala", value: 442 },
+					{ name: "Fortran", value: 439 }, { name: "LiveCode", value: 169 },
+					{ name: "Lisp", value: 409 }, { name: "F#", value: 391 }, ,
+					{ name: "Rust", value: 356 }, { name: "Kotlin", value: 319 },
+					{ name: "Ada", value: 316 }, { name: "Logo", value: 261 },
+					{ name: "SQL", value: 1935 }, { name: "RPG", value: 274 },
+					{ name: "PHP", value: 1909 }, { name: "LabVIEW", value: 243 },
+					{ name: "Haskell", value: 209 }, { name: "Bash", value: 196 },
+					{ name: "ActionScript", value: 182 }, { name: "Transact-SQL", value: 569 },
+					{ name: "PowerShell", value: 178 }, { name: "VBScript", value: 203 },
+					{ name: "JavaScript", value: 2076 }, { name: "TypeScript", value: 304 },
+					{ name: "Objective-C", value: 1501 }, { name: "Prolog", value: 261 },
+					{ name: "Groovy", value: 1394 }, { name: "Swift", value: 1362 },
+					{ name: "Crystal", value: 168 }, { name: "Lua", value: 379 },
+					{ name: "Julia", value: 224 }
+				]  //data结束
+			}]  //series结束
+		};  //option结束
+		myChart.setOption(option);  //为echarts对象加载数据 
+        </script>
+        <script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('aleftboxtmidd'));
+        option = {
+            color: ['#FF5722', '#009688', '#2196F3', '#FFC107'],
+            //   title: {
+            //     text: 'Referer of a Website',
+            //     subtext: 'Fake Data',
+            //     left: 'center'
+            //   },
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                textStyle: { // 设置图例文本样式
+            color: '#fff' // 将文本颜色设置为白色
+        },
+                
+            },
+            series: [
+                {
+                    name: '七日舆情类型图',
+                    type: 'pie',
+                    radius: '50%',
+                    data: [
+                        { value: 60, name: '社会' },
+                        { value: 25, name: '文化' },
+                        { value: 10, name: '经济' },
+                        { value: 5, name: '政治' },
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    },
+                }
+            ]
+        };
+        myChart.setOption(option);
+    </script>
+        <script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('aleftboxtbott'));
+        option = {
+  series: [
+    {
+      type: 'gauge',
+      center: ['50%', '60%'],
+      startAngle: 200,
+      endAngle: -20,
+      min: 0,
+      max: 100,
+      itemStyle: {
+        color: '#FFAB91'
+      },
+      progress: {
+        show: true,
+        width: 30
+      },
+      pointer: {
+        show: false
+      },
+      axisLine: {
+        lineStyle: {
+          width: 30
+        }
+      },
+      axisTick: {
+        distance: -45,
+        splitNumber: 5,
+        lineStyle: {
+          width: 2,
+          color: '#999'
+        }
+      },
+      splitLine: {
+        distance: -52,
+        length: 14,
+        lineStyle: {
+          width: 3,
+          color: '#999'
+        }
+      },
+      axisLabel: {
+        distance: -20,
+        color: '#999',
+        fontSize: 20
+      },
+      anchor: {
+        show: false
+      },
+      title: {
+        show: false
+      },
+      detail: {
+        valueAnimation: true,
+        width: '60%',
+        lineHeight: 40,
+        borderRadius: 8,
+        offsetCenter: [0, '-15%'],
+        fontSize: 60,
+        fontWeight: 'bolder',
+        formatter: '{value}%',
+        color: 'inherit'
+      },
+      data: [
+        {
+          value: 41
+        }
+      ]
+    },
+    {
+      type: 'gauge',
+      center: ['50%', '60%'],
+      startAngle: 200,
+      endAngle: -20,
+      min: 0,
+      max: 100,
+      itemStyle: {
+        color: '#FD7347'
+      },
+      progress: {
+        show: true,
+        width: 8
+      },
+      pointer: {
+        show: false
+      },
+      axisLine: {
+        show: false
+      },
+      axisTick: {
+        show: false
+      },
+      splitLine: {
+        show: false
+      },
+      axisLabel: {
+        show: false
+      },
+      detail: {
+        show: false
+      },
+      data: [
+        {
+          value: 41
+        }
+      ]
+    }
+  ]
+};
+        myChart.setOption(option);
+    </script>
+        <script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('amiddboxtbott1'));
+        var data = [
+            [[28604, 77, 17099, 'Australia', 1990], [31163, 77.4, 2440, 'Canada', 1990], [1516, 68, 1605773, 'China', 1990], [13670, 74.7, 10082, 'Cuba', 1990], [28599, 75, 49805, 'Finland', 1990], [29476, 77.1, 569499, 'France', 1990], [31476, 75.4, 789237, 'Germany', 1990], [28666, 78.1, 254830, 'Iceland', 1990], [1777, 57.7, 870776, 'India', 1990], [29550, 79.1, 129285, 'Japan', 1990], [2076, 67.9, 201954, 'North Korea', 1990], [12087, 72, 42954, 'South Korea', 1990], [24021, 75.4, 33934, 'New Zealand', 1990], [43296, 76.8, 4240375, 'Norway', 1990], [10088, 70.8, 381958, 'Poland', 1990], [19349, 69.6, 1475652, 'Russia', 1990], [10670, 67.3, 53905, 'Turkey', 1990], [26424, 75.7, 57117, 'United Kingdom', 1990], [37062, 75.4, 252810, 'United States', 1990]],
+            [[44056, 81.8, 23973, 'Australia', 2015], [43294, 81.7, 35927, 'Canada', 2015], [13334, 76.9, 1376043, 'China', 2015], [21291, 78.5, 11562, 'Cuba', 2015], [38923, 80.8, 55057, 'Finland', 2015], [37599, 81.9, 64345, 'France', 2015], [44053, 81.1, 80545, 'Germany', 2015], [42182, 82.8, 329425, 'Iceland', 2015], [5903, 66.8, 1311027, 'India', 2015], [36162, 83.5, 126571, 'Japan', 2015], [1390, 71.4, 251317, 'North Korea', 2015], [34644, 80.7, 503439, 'South Korea', 2015], [34186, 80.6, 4528526, 'New Zealand', 2015], [64304, 81.6, 5210967, 'Norway', 2015], [24787, 77.3, 386194, 'Poland', 2015], [23038, 73.13, 143918, 'Russia', 2015], [19360, 76.5, 78630, 'Turkey', 2015], [38225, 81.4, 64715810, 'United Kingdom', 2015], [53354, 79.1, 321771, 'United States', 2015]]
+        ];
+
+        option = {
+            backgroundColor: 'rgba(1,202,217,.2)',
+            grid: {
+                left: 40,
+                right: 40,
+                top: 50,
+                bottom: 40
+            },
+            title: {
+                top: 5,
+                left: 20,
+                textStyle: {
+                    fontSize: 10,
+                    color: 'rgba(255,255,255,.6)'
+                },
+                text: '环比类型：日环比'
+            },
+            legend: {
+                right: 10,
+                top: 5,
+                textStyle: {
+                    fontSize: 10,
+                    color: 'rgba(255,255,255,.6)'
+                },
+                data: ['1990', '2015']
+            },
+            xAxis: {
+                axisLine: {
+                    lineStyle: {
+                        color: 'rgba(255,255,255,.2)'
+                    }
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: 'rgba(255,255,255,.1)'
+                    }
+                },
+                axisLabel: {
+                    color: "rgba(255,255,255,.7)"
+                }
+            },
+            yAxis: {
+                axisLine: {
+                    lineStyle: {
+                        color: 'rgba(255,255,255,.2)'
+                    }
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: 'rgba(255,255,255,.1)'
+                    }
+                },
+                axisLabel: {
+                    color: "rgba(255,255,255,.7)"
+                },
+                scale: true
+            },
+            series: [{
+                name: '1990',
+                data: data[0],
+                type: 'scatter',
+                symbolSize: function (data) {
+                    return Math.sqrt(data[2]) / 5e2;
+                },
+                label: {
+                    emphasis: {
+                        show: true,
+                        formatter: function (param) {
+                            return param.data[3];
+                        },
+                        position: 'top'
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        shadowBlur: 10,
+                        shadowColor: 'rgba(120, 36, 50, 0.5)',
+                        shadowOffsetY: 5,
+                        color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [{
+                            offset: 0,
+                            color: 'rgb(251, 118, 123)'
+                        }, {
+                            offset: 1,
+                            color: 'rgb(204, 46, 72)'
+                        }])
+                    }
+                }
+            }, {
+                name: '2015',
+                data: data[1],
+                type: 'scatter',
+                symbolSize: function (data) {
+                    return Math.sqrt(data[2]) / 5e2;
+                },
+                label: {
+                    emphasis: {
+                        show: true,
+                        formatter: function (param) {
+                            return param.data[3];
+                        },
+                        position: 'top'
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        shadowBlur: 10,
+                        shadowColor: 'rgba(25, 100, 150, 0.5)',
+                        shadowOffsetY: 5,
+                        color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [{
+                            offset: 0,
+                            color: 'rgb(129, 227, 238)'
+                        }, {
+                            offset: 1,
+                            color: 'rgb(25, 183, 207)'
+                        }])
+                    }
+                }
+            }]
+        };
+        myChart.setOption(option);
+    </script>
+
+        <script>
+    // import china from '../data/china'
+
+        var myChart = echarts.init(document.getElementById("mainn"));
+        echarts.registerMap('china', window.chinaJson);
+      var option= {
+      series: [
+        {
+          type: "map",
+          map: "china", // 引入地图数据
+          name: "该省的舆情数量",
+          itemStyle: {
+            Color: "#093773", // 背景颜色
+            borderColor: "rgb(54,192,118)", // 边框颜色
+          },
+          data: [
+            {
+              name: "北京市",
+              value: 21,
+            },
+            {
+              name: "天津市",
+              value: 12,
+            },
+            {
+              name: "上海市",
+              value: 99,
+            },
+            {
+              name: "重庆市",
+              value: 98,
+            },
+            {
+              name: "河北省",
+              value: 99,
+            },
+            {
+              name: "河南省",
+              value: 29,
+            },
+            {
+              name: "云南省",
+              value: 79,
+            },
+            {
+              name: "辽宁省",
+              value: 38,
+            },
+            {
+              name: "黑龙江省",
+              value: 4,
+            },
+            {
+              name: "湖南省",
+              value: 32,
+            },
+            {
+              name: "安徽省",
+              value: 84,
+            },
+            {
+              name: "山东省",
+              value: 72,
+            },
+            {
+              name: "新疆维吾尔自治区",
+              value: 99,
+            },
+            {
+              name: "江苏省",
+              value: 70,
+            },
+            {
+              name: "浙江省",
+              value: 85,
+            },
+            {
+              name: "江西省",
+              value: 11,
+            },
+            {
+              name: "湖北省",
+              value: 62,
+            },
+            {
+              name: "广西壮族自治区",
+              value: 13,
+            },
+            {
+              name: "甘肃省",
+              value: 74,
+            },
+            {
+              name: "山西省",
+              value: 78,
+            },
+            {
+              name: "内蒙古自治区",
+              value: 74,
+            },
+            {
+              name: "陕西省",
+              value: 40,
+            },
+            {
+              name: "吉林省",
+              value: 9,
+            },
+            {
+              name: "福建省",
+              value: 90,
+            },
+            {
+              name: "贵州省",
+              value: 57,
+            },
+            {
+              name: "广东省",
+              value: 6,
+            },
+            {
+              name: "青海省",
+              value: 52,
+            },
+            {
+              name: "西藏自治区",
+              value: 10,
+            },
+            {
+              name: "四川省",
+              value: 98,
+            },
+            {
+              name: "宁夏回族自治区",
+              value: 11,
+            },
+            {
+              name: "海南省",
+              value: 25,
+            },
+            {
+              name: "台湾省",
+              value: 86,
+            },
+            {
+              name: "香港特别行政区",
+              value: 8,
+            },
+            {
+              name: "澳门特别行政区",
+              value: 50,
+            },
+            {
+              name: "南海诸岛",
+              value: 2,
+            },
+          ],
+        },
+      ],
+      tooltip: {
+        trigger: "item",
+      },
+    };
+    myChart.setOption(option);
+</script>
+
+        <script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('arightboxbott'));      
+        option = {
+            color: ['#7de494', '#7fd7b1', '#5578cf', '#5ebbeb', '#d16ad8', '#f8e19a', '#00b7ee', '#81dabe', '#5fc5ce'],
+  xAxis: {
+    type: 'category',
+    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    axisLine: {
+                    lineStyle: {
+                        color: '#CCCCCC'
+                    },
+                },
+  },
+  yAxis: {
+    type: 'value',
+    axisLine: {
+                    lineStyle: {
+                        color: '#CCCCCC'
+                    },
+                },
+  },
+  series: [
+    {
+      data: [150, 230, 224, 218, 135, 147, 260],
+      type: 'line',
+    }
+  ]
+};
+        myChart.setOption(option);
+    </script>
+
+        <script type="text/javascript">
+        var chartDom = document.getElementById('main');
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        option = {
+            xAxis: {
+                type: 'category',
+                data: ['30', '31', '6.1', '6.2', '6.3', '6.4', '6.5'],
+                axisLine: {
+                    lineStyle: {
+                        color: '#CCCCCC'
+                    },
+                },
+            },
+            yAxis: {
+                type: 'value',
+                data: ['0', '4', '8', '12', '16', '20', '24'],
+                axisLine: {
+                    lineStyle: {
+                        color: '#CCCCCC'
+                    },
+                },
+            },
+            series: [
+                {
+                    data: [14, 18, 15, 8, 22, 10, 13],
+                    type: 'bar',
+                    itemStyle: {
+                        color: '#547dee'
+                    }
+                }
+            ]
+        };
+        myChart.setOption(option);
+    </script>
+
+    </body>
+
+</html>

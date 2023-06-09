@@ -1,0 +1,39 @@
+{
+    "name": "vite_admin",
+    "version": "0.0.1",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "serve": "vite preview"
+    },
+    "dependencies": {
+        "@amap/amap-jsapi-loader": "^1.0.1",
+        "@antv/g2plot": "^2.4.15",
+        "@element-plus/icons": "^0.0.11",
+        "ali-oss": "^6.17.1",
+        "axios": "^0.26.1",
+        "dayjs": "^1.11.0",
+        "echarts": "^4.9.0",
+        "element-plus": "^2.1.9",
+        "html-to-vue": "^1.4.0",
+        "js-md5": "^0.7.3",
+        "nprogress": "^0.2.0",
+        "qs": "^6.10.3",
+        "screenfull": "^6.0.1",
+        "vite": "^2.9.4",
+        "vue": "^3.2.33",
+        "vue-router": "^4.0.14",
+        "vuex": "^4.0.2",
+        "vuex-persistedstate": "^4.1.0",
+        "wangeditor": "^4.7.15",
+        "xgplayer": "^2.31.6"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^2.3.4",
+        "@vue/compiler-sfc": "^3.2.33",
+        "js-base64": "^3.7.2",
+        "sass": "^1.50.0",
+        "secure-ls": "^1.2.6",
+        "vite-plugin-imp": "^2.1.7"
+    }
+}
