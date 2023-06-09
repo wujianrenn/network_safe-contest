@@ -167,6 +167,11 @@ export default {
 </script>
 
 <style scoped>
+
+ul li {
+    list-style: none;
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -216,8 +221,6 @@ export default {
   border: 1px solid black;
   width: 850px; /* 设置div宽度 */
   height: 330px;
-  /* margin: 200px 20px 100px 20px; */
-  /* border-top: 300px; */
   margin: 10px 200px;
 }
 
