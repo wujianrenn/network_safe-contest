@@ -61,7 +61,7 @@
           <h2 class="tith2">舆情高频词</h2>
           <div class="left2_table">
             <iframe
-              src="../../../品牌词云.html"
+              src="../../../舆情词云.html"
               frameborder="0"
               style="width: 400px; height: 590px"
               id="iframeBox"
