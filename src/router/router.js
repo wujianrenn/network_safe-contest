@@ -156,7 +156,7 @@ const layoutMap = [
         path: "s",
         name: "DataList",
         meta: { title: "数据列表" },
-        component: () => import("../views/hot/Hot.vue"),
+        component: () => import("../views/hotspot/Hot.vue"),
       },
       {
         path: "table",
