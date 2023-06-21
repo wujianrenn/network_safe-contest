@@ -2,6 +2,7 @@ import Layout from "../layout/Index.vue";
 import RouteView from "../components/RouteView.vue";
 
 const layoutMap = [
+  //首页
   {
     path: "account",
     name: "Index",
@@ -63,15 +64,6 @@ const layoutMap = [
     component: () => import("../views/admin/User.vue"),
   },
 
-  //+++++++++++++++++++++++++++++++++++++++
-  // {
-  //     path: "account/user",
-  //     name: "User",
-  //     hidden: true /* 不在侧边导航展示 */,
-  //     meta: { title: "个人中心" },
-  //     component: () => import("../views/admin/User.vue")
-  // },
-  //+++++++++++++++++++++++++++++++++++++++
   {
     path: "/error",
     name: "NotFound",
@@ -85,7 +77,7 @@ const layoutMap = [
     redirect: { name: "NotFound" },
   },
 
-  // ================================
+  //舆情侦探页
   {
     path: "account/news",
     name: "News",
@@ -146,6 +138,7 @@ const layoutMap = [
     component: () => import("../views/detective/lastest/lastest5/Index.vue"),
   },
 
+  //舆情热点
   {
     path: "account/hot",
     name: "Hot",
@@ -200,27 +193,22 @@ const layoutMap = [
     ],
   },
 
-  // {
-  //     path: "news",
-  //     name: "Result",
-  //     hidden: true /* 不在侧边导航展示 */,
-  //     meta: { title: "舆情界面" },
-  //     component: () => import("../views/detective/Station.vue")
-  // },
-
   //===================管理端===================
+  //首页
   {
     path: "contor/show",
     name: "Show",
     meta: { title: "首页", roles: ["admin"], icon: "Aim" },
     component: () => import("../views/contor/show/Show.vue"),
   },
+  //舆情审核
   {
     path: "contor/news_ack",
     name: "News_ack",
     meta: { title: "舆情审核", roles: ["admin"], icon: "View" },
     component: () => import("../views/contor/news_ack/News_ack.vue"),
   },
+  //热点发布
   {
     path: "contor/hot_push",
     name: "Hot_push",
