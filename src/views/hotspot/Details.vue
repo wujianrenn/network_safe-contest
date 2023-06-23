@@ -5,6 +5,7 @@
       <el-button size="large" :icon="Search" round @click="start"
         >搜索</el-button
       >
+      <!-- 搜索查询，调接口 -->
     </div>
     <el-card class="box-card">
       <template #header>
@@ -21,6 +22,7 @@
           startNumber
         }}</span> -->
         <span style="float: right; margin-right: 20px;" @click="good">
+          <!-- 点击后，让图标变红，换红色图标 -->
           <span v-if="item.no<2"><img src="./fire.png" alt="" width="26" height="24"  v-for="index in 1"/></span>
           <span v-if="item.no<8"><img src="./fire.png" alt="" width="26" height="24"  v-for="index in 3"/></span>
           <span v-else="item.no<10"><img src="./fire.png" alt="" width="26" height="24"  v-for="index in 2"/></span>
@@ -163,6 +165,7 @@ export default {
       }
       this.change = !this.change;
 
+      //接口
       const startNumber = this.startNumber;
       const token = sessionStorage.getItem("token");
       axios.defaults.headers.common["token"] = ` ${token}`;
@@ -171,12 +174,10 @@ export default {
         .put(url, token, value, opinionid)
         .then((response) => {
           console.log(response.data);
-          // console.log()
           if (response.data.code != 1) {
             alert("网络出现问题，请重试!");
             return;
           }
-          // sessionStorage.setItem('token',res.token)
         })
         .catch((error) => {
           console.error(error);
