@@ -72,6 +72,7 @@ export default {
     const store = useStore();
     const loginFormRef = ref();
 
+    //把需要进行确认的信息装入一个对象里
     const loginFormState = reactive({
       account: "",
       password: "",

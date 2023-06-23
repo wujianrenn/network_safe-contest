@@ -1,7 +1,5 @@
 <template>
   <div class="centainer">
-    <!-- 这里是模板内容 -->
-
     <el-card class="box-card">
       <template #header>
         <div class="card-header">
