@@ -11,6 +11,14 @@ const layoutMap = [
     },
   
     {
+      path: "account/register",
+      name: "Register",
+      hidden:true,
+      meta: { title: "注册页面", icon: "View", roles: ["user"] },
+      component: () => import("../views/Register.vue"),
+      },
+
+    {
         path: "account/answer",
         name: "Answer",
         hidden:true,

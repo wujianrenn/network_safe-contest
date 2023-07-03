@@ -168,11 +168,8 @@ export default {
     };
 
     const handleRegister = () => {
-      console.log("happy!");
-      let params = {
-        account: loginFormState.account,
-        password: loginFormState.password,
-      };
+      console.log("happy!1");
+      router.rep('/account/register')
     };
     return {
       loginFormRef,

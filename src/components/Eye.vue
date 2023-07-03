@@ -347,13 +347,14 @@ export default {
           console.error(1, error);
         });
 
-      ElMessageBox.alert("鉴别：此舆情为真", "提交内容：最近AI诈骗盛行？", {
+      ElMessageBox.alert("", "提交成功", {
         confirmButtonText: "OK",
         callback: () => {
           ElMessage({
             type: "success",
             message: `鉴别完成`,
           });
+          this.$router.push('/account/answer' );
         },
       });
     },
