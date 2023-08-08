@@ -17,6 +17,8 @@ import oss from "./utils/oss"; /* 上传文件 */
 import echarts from 'echarts'
 // Vue.prototype.$echarts = echarts // 全局注册 ECharts 组件
 
+// axios.defaults.baseURL = '/checkNews'        //关键代码
+
 const app = createApp(App);
 
 app.config.globalProperties.$axios = axios;

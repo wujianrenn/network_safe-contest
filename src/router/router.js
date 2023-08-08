@@ -10,13 +10,7 @@ const layoutMap = [
     component: () => import("../views/Index.vue"),
     },
   
-    {
-      path: "account/register",
-      name: "Register",
-      hidden:true,
-      meta: { title: "注册页面", icon: "View", roles: ["user"] },
-      component: () => import("../views/Register.vue"),
-      },
+
 
     {
         path: "account/answer",
@@ -24,7 +18,7 @@ const layoutMap = [
         hidden:true,
         meta: { title: "甄别结果", icon: "View"},
         component: () => import("../views/detective/answer/Index.vue"),
-        },
+    },
   // {
   //     path: "account/data",
   //     name: "Data",
@@ -54,7 +48,7 @@ const layoutMap = [
   {
       path: "account/charts",
       name: "Charts",
-      meta: { title: "数据图表", icon: "trend-charts" , roles: ["user"] },
+      meta: { title: "舆情监测大屏", icon: "trend-charts" , roles: ["user"] },
       // component: () => import("../views/data/Charts.vue")
       component: () => import("../views/data/LargeNumber.vue")
   },
@@ -220,7 +214,7 @@ const layoutMap = [
   {
     path: "contor/hot_push",
     name: "Hot_push",
-    meta: { title: "热点发布", roles: ["admin"], icon: "ZoomIn" },
+    meta: { title: "热点甄别", roles: ["admin"], icon: "ZoomIn" },
     component: () => import("../views/contor/hot_push/Hot_push.vue"),
   },
   // {
@@ -239,6 +233,12 @@ const routes = [
     meta: { title: "登录" },
     component: () => import("../views/login/Login.vue"),
   },
+  {
+    path: "/register",
+    name: "Register",
+    meta: { title: "注册页面"},
+    component: () => import("../views/login/Register.vue"),
+    },
   { path: "/", name: "Layout", component: Layout, children: [...layoutMap] },
 ];
 

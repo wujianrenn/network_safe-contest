@@ -34,6 +34,7 @@
           </el-input>
         </el-form-item>
         <el-form-item>
+          <el-checkbox v-model="checked3" label="是否为管理人员" @click="handleCheckboxClick" />
           <el-button
             type="primary"
             style="width: 100%"
@@ -67,6 +68,7 @@ import axios from "axios";
 export default {
   components: { Icons },
   setup() {
+    const checked3 = ref(false);
     const { proxy } = getCurrentInstance();
     const router = useRouter();
     const store = useStore();
@@ -78,6 +80,10 @@ export default {
       password: "",
       admin: "0",
     });
+
+    const handleCheckboxClick = () => {
+      loginFormState.admin = "1";
+    };
 
     const rules = {
       account: [{ required: true, message: "账号不能为空", trigger: "blur" }],
@@ -124,6 +130,7 @@ export default {
               } else {
                 console.log("登录失败");
                 alert("登录失败");
+                console.log(loginFormState.admin)
                 open4();
                 router.replace("/login");
               }
@@ -133,7 +140,7 @@ export default {
             });
 
           if (loginFormState.account === "admin") {
-            router.replace("contor/show");
+            router.replace("/contor/show");
           } else {
             router.replace("/account");
           }
@@ -169,7 +176,7 @@ export default {
 
     const handleRegister = () => {
       console.log("happy!1");
-      router.rep('/account/register')
+      router.push('/register')
     };
     return {
       loginFormRef,
@@ -178,6 +185,7 @@ export default {
       handleLogin,
       handleRegister,
       open4,
+      handleCheckboxClick,
     };
   },
 };

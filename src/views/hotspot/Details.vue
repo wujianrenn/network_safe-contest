@@ -15,7 +15,7 @@
           <span style="font-size: 24px; float: right;">舆情热度</span>
         </div>
       </template>
-      <div v-for="item in listData" :key="item.no" class="ltext-item">
+      <div v-for="item in listData" @click="handleItemClick(item)" :key="item.no" class="ltext-item"  >
        <span style="margin-right: 200px;">{{ item.no }}</span> 
         <span>{{ item.title }}</span>
         <!-- <span :style="{ color: changeColor }" class="startnumber">{{
@@ -36,6 +36,7 @@
 
 <script>
 import axios from "axios";
+import { toRaw } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 export default {
@@ -113,31 +114,36 @@ export default {
     };
   },
   methods: {
+    handleItemClick(item) {
+      console.log("Clicked item:", toRaw(item));
+      this.$router.push({
+        path: "./news/lastest" + item.no,
+        query: {
+          itemId: item.no,
+          itemTitle: item.title,
+          itemTiem: item.time,
+          itemName: item.name,
+          itemDescription: item.description,
+        },
+      });
+    },
+
     start() {
       const token = sessionStorage.getItem("token");
       axios.defaults.headers.common["token"] = ` ${token}`;
 
       const text = this.ltext;
       const url = `http://124.223.59.64:80/common/search/` + text;
-      console.log(url);
-      console.log("2");
-      console.log(this.ltext);
-      console.log("3");
+
       axios
         .get(url, token)
         .then((response) => {
           console.log(response.data);
           ElMessageBox.alert(
-            response.data.data[0].content,
-            response.data.data[0].title,
+            // response.data.data[0].content,
+            // response.data.data[0].title,
             {
-              confirmButtonText: "OK",
-              callback: () => {
-                ElMessage({
-                  type: "success",
-                  message: `查询成功`,
-                });
-              },
+              '搜索结果': "成功",
             }
           );
         })

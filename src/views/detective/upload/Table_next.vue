@@ -6,16 +6,21 @@
         <el-input v-model="form.title" />
       </el-form-item>
       <el-form-item label="舆情类型">
-        <el-select v-model="form.type" placeholder="请选择舆情类型">
-          <el-option label="娱乐明星" value="shanghai" />
-          <el-option label="Zone two" value="beijing" />
+        <el-select v-model="form.opinion_type" placeholder="请选择舆情类型">
+          <el-option label="企业舆情" value="company" />
+          <el-option label="校园舆情" value="school" />
+          <el-option label="社会舆情" value="local" />
+          <el-option label="政治舆情" value="politics" />
+          <el-option label="体育舆情" value="pe" />
+          <el-option label="经济舆情" value="eco" />
         </el-select>
       </el-form-item>
       <el-form-item label="发生地点">
         <el-select v-model="form.region" placeholder="请选择发生地点">
           <el-option label="陕西省" value="shannxi" />
-          <el-option label="北京市" value="beijing" />
-          <el-option label="上海市" value="shanghai" />
+          <el-option label="北京" value="beijing" />
+          <el-option label="上海" value="shanghai" />
+          <el-option label="郑州" value="zhengzhou" />
         </el-select>
       </el-form-item>
       <el-form-item class="item" label="舆情内容">
@@ -23,7 +28,7 @@
         <el-input v-model="form.content" type="textarea" :rows="6" />
       </el-form-item>
       <el-form-item class="item" label="得知源头">
-        <el-input v-model="form.desc" type="textarea" :rows="6" />
+        <el-input v-model="form.resource" type="textarea" :rows="6" />
       </el-form-item>
       <div class="center">
         <el-form-item>
@@ -63,14 +68,12 @@ export default {
   setup() {
     const form = reactive({
       title: "",
-      source: "",
-      date1: "",
-      date2: "",
-      type: [],
+      opinion_type: " ",
+      // region:" ",
       resource: "",
-      desc: "",
       content: "",
-      id: "123",
+      // id: "123",
+      state:0,
     });
 
     const token = sessionStorage.getItem("token");
@@ -82,6 +85,7 @@ export default {
       axios
         .post(url, form, token)
         .then((response) => {
+          // console.log(token)
           console.log(response.data);
         })
         .catch((error) => {

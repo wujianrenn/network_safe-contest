@@ -27,6 +27,12 @@ router.beforeEach((to, from, next) => {
 
     if (to.path === "/login") {
         !!jwt ? next("/") : next();
+    } else if (to.path === "/register") { // 添加这个条件分支
+        if (!!jwt) {
+            next("/"); // 已登录状态下，点击注册按钮直接跳转到首页
+        } else {
+            next(); // 未登录状态下，允许跳转到注册页面
+        }
     } else {
         if (from.name === "Login" && !jwt) {
             next(false);

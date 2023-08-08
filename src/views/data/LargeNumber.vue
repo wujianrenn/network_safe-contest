@@ -3,10 +3,10 @@
     <div class="bnt">
       <div class="topbnt_left fl">
         <ul>
-          <li class="active">警情警力</li>
+          <!-- <li class="active">警情警力</li> -->
         </ul>
       </div>
-      <h1 class="tith1 fl">舆情分析-数据图表</h1>
+      <h3 class="tith1 fl">慧眼舆情监测大屏</h3>
     </div>
     <!-- bnt end -->
     <div class="left1">
@@ -41,8 +41,9 @@
             <h2 class="tith2 pt1">舆情日志</h2>
             <el-table
               :data="tableData"
+              height="340"
               style="width: 100%; background-color: transparent"
-              :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+              :header-cell-style="headerCellStyle"
               class="my_table"
             >
               <el-table-column prop="time" label="时间" width="180" />
@@ -94,44 +95,44 @@ export default {
         {
           no: "1",
           title: "钟南山称今年6月底或是今年疫情高峰？",
-          time: "2022.5.16",
+          time: "2023.7.12",
           name: "张三",
-          result: "true",
+          result: "70%真",
         },
         {
           no: "2",
           title: "最近AI诈骗盛行？",
-          time: "2022.5.16",
+          time: "2023.7.12",
           name: "张三",
-          result: "true",
+          result: "50%真",
         },
         {
           no: "3",
           title: "G7峰会上拜登称美中关系会短时间内缓和，可信吗？",
-          time: "2022.5.16",
+          time: "2023.7.12",
           name: "张三",
-          result: "false",
+          result: "70%真",
         },
         {
           no: "4",
           title: "桂林371所学校因暴雨停课？",
-          time: "2022.5.16",
+          time: "2023.7.12",
           name: "张三",
-          result: "true",
+          result: "60%真",
         },
         {
           no: "5",
           title: "华为研发出量子芯片？",
-          time: "2022.5.16",
+          time: "2023.7.12",
           name: "张三",
-          result: "false",
+          result: "80%真",
         },
         {
           no: "6",
           title: "oppo终止哲库业务是因为美国的威胁？",
-          time: "2022.5.16",
+          time: "2023.7.12",
           name: "张三",
-          result: "true",
+          result: "80%真",
         },
       ],
     };
@@ -151,7 +152,7 @@ export default {
     chart1.setOption({
       xAxis: {
         type: "category",
-        data: ["30", "31", "6.1", "6.2", "6.3", "6.4", "6.5"],
+        data: ["7.1", "7.2", "7.3", "6.2", "7.4", "7.5", "7.6"],
         axisLine: {
           lineStyle: {
             color: "#CCCCCC",
@@ -188,8 +189,10 @@ export default {
         trigger: "item",
       },
       legend: {
-        orient: "vertical",
+        orient: "horizontal",
+        top: 15,
         left: "left",
+        left: 15,
         textStyle: {
           // 设置图例文本样式
           color: "#fff", // 将文本颜色设置为白色
@@ -201,10 +204,12 @@ export default {
           type: "pie",
           radius: "50%",
           data: [
-            { value: 60, name: "社会" },
-            { value: 25, name: "文化" },
-            { value: 10, name: "经济" },
-            { value: 5, name: "政治" },
+            { value: 45, name: "社会舆情" },
+            { value: 20, name: "企业舆情" },
+            { value: 10, name: "经济舆情" },
+            { value: 15, name: "政治舆情" },
+            { value: 5, name: "体育舆情" },
+            { value: 5, name: "校园舆情" },
           ],
           emphasis: {
             itemStyle: {
@@ -235,6 +240,9 @@ export default {
             {
               value: 41,
               name: "SCORE",
+              itemStyle: {
+                color: "#FF5722", // 设置图表颜色
+              },
             },
           ],
         },
@@ -538,6 +546,20 @@ export default {
       ],
     });
   },
+
+  setup() {
+    const headerCellStyle = ({ column, $index }) => {
+      // 返回一个样式对象，覆盖表格头部的样式
+      return {
+        backgroundColor: "transparent", // 设置背景色为透明，即去掉白色背景
+        /* 可以设置其他样式，如颜色、边框等 */
+      };
+    };
+
+    return {
+      headerCellStyle,
+    };
+  },
   components: { ChinaMap },
 };
 </script>
@@ -552,13 +574,23 @@ export default {
 .el-table,
 .el-table__expanded-cell {
   background-color: transparent;
+  color: white;
 }
+
+.el-table thead {
+  color: white;
+  font-size: 16px;
+}
+
 
 el-table th,
 .el-table tr,
-el-table-column {
+el-table-column,
+tr:hover ,
+.el-table__body{
   background-color: transparent;
 }
+
 .wpbox {
   position: fixed;
   top: 0;
@@ -867,8 +899,8 @@ html,
   width: 91%;
   /* margin-left: 5%; */
   font-size: 24px;
-  height: 520px;
-  overflow: hidden;
+  height: 500px;
+  /* overflow: hidden; */
 }
 .hdleft2_table {
   width: 91%;
@@ -1004,7 +1036,7 @@ html,
 .tith2 {
   text-align: center;
   width: 100%;
-  font-size: 12px;
+  font-size: 18px;
   padding-top: 1.9%;
   font-weight: normal;
   letter-spacing: 2px;

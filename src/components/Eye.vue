@@ -15,7 +15,10 @@
     </template>
   </el-drawer> -->
 
-  <!-- <input type="file" ref="fileInput" @change="uploadImage" /> -->
+  <!-- <input type="file" ref="fileInput" @click="uploadImage" /> -->
+  <input type="file" ref="fileInput" @change="handleFileChange"/>
+  <button @click="uploadImage">上传</button>
+
   <el-drawer v-model="drawer1" direction="rtl" :with-header="false">
     <!-- 添加上传图片 -->
     <el-upload
@@ -103,9 +106,9 @@
         </el-card> -->
         <el-input
           v-model="textarea"
-          :rows="4"
+          :rows="5"
           type="textarea"
-          placeholder="请输入您想问的问题"
+          placeholder="&nbsp;&nbsp;请输入您的问题"
           class="question"
         />
       </div>
@@ -121,6 +124,7 @@
 
 <script>
 import axios from "axios";
+// import { proxy } from '../../vite.config.js';
 import { ref, toRaw } from "vue";
 import { ElMessageBox, ElMessage } from "element-plus";
 import md5 from "js-md5";
@@ -173,10 +177,15 @@ export default {
       handledURL: "",
       file: null,
       textarea: ref(""),
-      router:'',
+      router: '',
+      selectedFile: null,
     };
   },
   methods: {
+    onBeforeUpload(file) {
+      this.selectedFile = file; // 更新选中的文件
+      console.log(this.selectedFile)
+    },
     // // 读取图片文件并转换为Base64格式
     // readFileAsBase64(file) {
     //   return new Promise((resolve, reject) => {
@@ -204,32 +213,42 @@ export default {
     //   return encryptedData;
     // },
 
+    handleFileChange(event) {
+      this.selectedFile = event.target.files[0];
+    },
     uploadImage() {
+      const selectedFile = this.$refs.fileInput.files[0];
+      console.log(111,selectedFile)
+      let formData = new FormData();
+      formData.set("file", selectedFile)
+      console.log(2,formData.entries[1])
+      console.log("FormData entries:");
+      for (let pair of formData.entries()) {
+          console.log(pair[0], pair[1]);
+      }
+
       axios.defaults.headers.post["Content-Type"] = "multipart/form-data";
-      const file = this.$refs.fileInput.files[0];
-      const formData = new FormData();
-      formData.append("file", file);
       const token = sessionStorage.getItem("token");
       axios.defaults.headers.common["token"] = ` ${token}`;
       axios
-        .post("http://124.223.59.64:80/common/analyse", formData, token)
+        .post("http://124.223.59.64:80/common/analyse", selectedFile, token)
         .then((response) => {
-          this.imageUrl = response.data.url;
+          console.log(response)
+          console.log(111)
         });
     },
 
-    onBeforeUpload(file) {
-      console.log(223, file);
-    },
+    // onBeforeUpload(file) {
+    //   console.log(223, file);
+    // },
+
     confirmClickPicture() {
-      
       ElMessageBox.confirm(` 确认提交 ?`)
         .then(() => {
-          this.$router.push('/account/answer' );
-          const f = toRaw(this.file).raw;
-          console.log(44, f);
-          let ff = new FormData();
-          ff.append("file", f);
+          console.log(111)
+          console.log(44, this.selectedFile);
+          // let ff = new FormData();
+          ff.append("file", file);
           // f.raw.header.Content-Type = 'multipart/form-data'
           console.log("11111");
           
@@ -263,10 +282,14 @@ export default {
         .catch(() => {
           // catch error
         });
+      setTimeout(() => {
+        this.$router.push('/account/answer');
+      }, 2000);
+        
     },
 
     handleRemove(file) {
-      console.log(file);
+      console.log(toRaw(file));
     },
 
     handlePictureCardPreview(file) {
@@ -278,12 +301,16 @@ export default {
 
     handleDownload(file) {
       const url = file.url.split("blob:")[1];
+      console.log(url)
       this.dialogImageUrl = url;
       this.dialogVisible = true;
       const f = toRaw(file);
+      console.log(f)
       this.handledURL = md5(this.dialogImageUrl);
-
       console.log(this.handledURL);
+
+      this.selectedFile = f; // 更新选中的文件
+      console.log(this.selectedFile)
     },
 
     handleCheckedChange() {
@@ -309,10 +336,16 @@ export default {
 
     start() {
       console.log(this.textarea);
-      const token = "18e9e259-8c8a-438b-aa33-a2ef6fdff16c";
+
       // axios.defaults.headers.common["token"] = ` ${token}`;
-      axios.defaults.headers.common["AUTHORIZATION"] = token;
-      const url = "/apii";
+      // const token = "18e9e259-8c8a-438b-aa33-a2ef6fdff16c";
+      // axios.defaults.headers.common["AUTHORIZATION"] = token;
+
+      const token = sessionStorage.getItem("token");
+      axios.defaults.headers.common["token"] = ` ${token}`;
+      // const url = "/checkNews/";
+      let url = 'http://124.223.59.64:8083/checkNews'
+      // const url = proxy.target + '/checkNews';
       console.log(url);
       const textarea = {
         news: this.textarea,
@@ -320,15 +353,17 @@ export default {
       axios
         .post(
           url,
-          textarea
+          textarea,
+          token,
           // {
           // headers: {
-          //   "Content-Type": "application/raw"
+          //   "Content-Type": "text/plain"
           // }}
         )
         .then((response) => {
-          console.log(response.data.data.check_status);
-          console.log(response.data.data.raw_response);
+          // console.log(response.data.data.check_status);
+          // console.log(response.data.data.raw_response);
+          console.log(111);
           ElMessageBox.alert("此舆情为真", "Title", {
             confirmButtonText: "OK",
             callback: (action) => {

@@ -16,27 +16,16 @@ export default defineConfig({
         open: true,
         cors: true,
         proxy: {
-            "/apii": {
-                target: "http://124.223.59.64:8083/checkNews",
-                changeOrigin: true,
-                rewrite: path => path.replace(/^\/api/, ""),
-                bypass: function (req, res, proxyOptions) {
-                    // 在这里修改请求头
-                    req.headers["Content-Type"] = "application/raw";
-                    req.headers["Authorization"] = "18e9e259-8c8a-438b-aa33-a2ef6fdff16c";
-          
-                    // 携带数据
-                    const requestData = {
-                      // 添加你要携带的数据字段
-                      key: ""
-                    };
-                    req.body = JSON.stringify(requestData);
-          
-                    // 返回 null 表示继续使用代理默认行为
-                    return null;
-                  },
+            '/api':{
+                target: "http://124.223.59.64:8083", //跨域地址
+                ws:true,//代理websocked
+                changeOrigin:true, //支持跨域
+                rewrite:(path) => path.replace(/^\/api/, " ")//重写路径,替换/api
+                // pathRewrite: {                   //路径重写
+                //     '/api': ''                     //选择忽略拦截器里面的单词
+                // }
             }
-        }
+          }
     },
     /* 打包配置 */
     base: "./",
