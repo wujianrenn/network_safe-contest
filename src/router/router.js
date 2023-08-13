@@ -104,6 +104,14 @@ const layoutMap = [
   },
 
   {
+    path: "account/detail",
+    name: "Deatail",
+    meta: { title: "舆情详情" },
+    hidden: true /* 不在侧边导航展示 */,
+    component: () => import("../views/detective/Detail.vue"),
+  },
+
+  {
     path: "account/news/lastest1",
     name: "Lastest1",
     meta: { title: "1" },
@@ -148,7 +156,7 @@ const layoutMap = [
     meta: { title: "舆情热点", icon: "DataLine", roles: ["user"] },
     children: [
       {
-        path: "s",
+        path: "list",
         name: "DataList",
         meta: { title: "数据列表" },
         component: () => import("../views/hotspot/Hot.vue"),

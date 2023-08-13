@@ -16,14 +16,18 @@ export default defineConfig({
         open: true,
         cors: true,
         proxy: {
-            '/api':{
-                target: "http://124.223.59.64:8083", //跨域地址
-                ws:true,//代理websocked
-                changeOrigin:true, //支持跨域
-                rewrite:(path) => path.replace(/^\/api/, " ")//重写路径,替换/api
+            '/api': {
                 // pathRewrite: {                   //路径重写
                 //     '/api': ''                     //选择忽略拦截器里面的单词
-                // }
+                // },
+                target: "https://localhost:3000", //跨域地址
+                ws:true,//代理websocked
+                changeOrigin:true, //支持跨域
+                rewrite: (path) => {
+                    console.log('999')
+                    return path.replace(/^\/api/, " ")
+                },//重写路径,替换/api
+
             }
           }
     },
