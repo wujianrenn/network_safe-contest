@@ -1037,7 +1037,7 @@ html,
   text-align: center;
   width: 100%;
   font-size: 18px;
-  padding-top: 1.9%;
+  /* padding-top: 1.9%; */
   font-weight: normal;
   letter-spacing: 2px;
   font-weight: normal;
@@ -1053,7 +1053,7 @@ html,
   width: 33%;
 }
 .topbnt_left ul {
-  padding-top: 38px;
+  padding-top: 3px;
   padding-left: 10%;
   width: 100%;
 }
@@ -1395,7 +1395,7 @@ i.redr {
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
-  width: 815px;
+  width: 750px;
   height: 91.6%;
   margin-left: 0.5%;
   margin-right: 1%;

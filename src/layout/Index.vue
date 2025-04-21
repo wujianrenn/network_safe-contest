@@ -56,10 +56,10 @@ export default {
 
 .layout {
     box-sizing: border-box;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     overflow: hidden;
-    background-color: #fff;
+    /* background-color: #fff; */
     .el-container {
         height: 100vh;
         overflow: hidden;
@@ -75,7 +75,7 @@ export default {
             overflow-y: auto;
             @include zdy_scrollbar;
             .el-main {
-                padding: 16px;
+                padding: 0;
                 min-height: calc(100vh - 105px);
                 height: auto;
             }

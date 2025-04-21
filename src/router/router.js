@@ -108,6 +108,7 @@ const layoutMap = [
     name: "Deatail",
     meta: { title: "舆情详情" },
     hidden: true /* 不在侧边导航展示 */,
+    props: true, // 这会将查询参数作为组件的 props 传递
     component: () => import("../views/detective/Detail.vue"),
   },
 

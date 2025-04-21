@@ -1,9 +1,19 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+
+import viteCompression from 'vite-plugin-compression';
+
 const { resolve } = require("path");
 
 export default defineConfig({
-    plugins: [vue()],
+    plugins: [
+        vue(),
+        // viteCompression({
+        //     threshold: 10240, // 设置只有大于 10kb 的文件才会被压缩, 单位b
+        //     // 其他的属性暂不需要配置，使用默认即可；
+        //     // 详细配置查看 https://github.com/vbenjs/vite-plugin-compression/blob/main/README.zh_CN.md
+        // })
+    ],
     resolve: {
         alias: [
             {

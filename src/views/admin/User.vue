@@ -36,9 +36,9 @@
               clearable
             ></el-input>
           </el-form-item>
-          <el-form-item label="生日" prop="birth">
+          <!-- <el-form-item label="生日" prop="birth">
             <el-input v-model.trim="userState.birth" clearable></el-input>
-          </el-form-item>
+          </el-form-item> -->
 
           <!-- <el-form-item label="邮箱" prop="email">
                         <el-input v-model.trim="userState.email" clearable></el-input>
@@ -52,9 +52,9 @@
           <el-form-item label="地址" prop="address">
             <el-input v-model.trim="userState.address" clearable></el-input>
           </el-form-item>
-          <el-form-item label="微信号" prop="wx">
+          <!-- <el-form-item label="微信号" prop="wx">
             <el-input v-model.trim="userState.wx" clearable></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item>
             <el-button @click="handleClick('reset')">重置</el-button>
             <el-button type="primary" @click="handleClick('save')">{{
@@ -69,13 +69,18 @@
 
 <script>
 import axios from "axios";
-import { reactive, ref } from "vue";
+import { reactive, ref,onMounted } from "vue";
 import { ElNotification } from "element-plus";
 
 export default {
   setup() {
     const userFormRef = ref();
-    const userState = reactive({ nickname: "", gender: "", number: "" });
+    const userState = reactive({
+      nickname: "",
+      gender: "",
+      number: "",
+      address: "",
+    });
     const rules = {
       nickname: [{ required: true, message: "姓名不能为空", trigger: "blur" }],
       email: [
@@ -103,7 +108,7 @@ export default {
         const url = "http://124.223.59.64:80/person/add";
         console.log(url);
         axios
-          .post(url, token, userState)
+          .put(url, userState, token)
           .then((response) => {
             console.log(response.data);
             if (response.data.code != 1) {
@@ -124,7 +129,44 @@ export default {
         });
       });
     };
-    return { userFormRef, userState, rules, btnStatus, handleClick, isSave };
+
+    const handleButtonClick = async () => {
+      const token = sessionStorage.getItem("token");
+      axios.defaults.headers.common["token"] = ` ${token}`;
+      const url = "http://124.223.59.64:80/person/show";
+      try {
+        const response = await axios.get(url);
+        console.log(response, 2);
+        response.data.data.forEach((dataItem) => {
+          userState.value.push({
+            id: dataItem.id,
+            nickname: dataItem.nickname,
+            gender: dataItem.gender,
+            number: dataItem.number,
+            userId: dataItem.userId,
+          });
+        });
+        console.log(toRaw(userState.value), "111");
+        if (response.data.code !== 1) {
+          alert("网络出现问题，请重试!");
+          return;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    onMounted(() => {
+      handleButtonClick();
+    });
+    return {
+      userFormRef,
+      userState,
+      rules,
+      btnStatus,
+      handleClick,
+      isSave,
+    };
   },
 };
 </script>

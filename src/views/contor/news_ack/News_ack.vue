@@ -1,17 +1,33 @@
 <template>
-  <el-button @click="handleButtonClick((type = 0))">已审核通过</el-button>
-  <el-button @click="handleButtonClick((type = 1))">待审核</el-button>
-  <el-scrollbar height="900px">
-    <el-table :data="tableData" stripe style="width: 100%"  @row-click="handleButtonIfpass">
+  <div class="news-ack-header">
+    <div class="news-ack-btn-group">
+      <el-button @click="handleButtonClick((type = 0))">已审核通过</el-button>
+      <el-button @click="handleButtonClick((type = 1))">待审核</el-button>
+    </div>
+</div>
+<el-scrollbar height="900px">
+  <el-table
+    :data="tableData"
+    stripe
+    style="width: 100%"
+    @row-click="handleButtonIfpass"
+  >
       <el-table-column type="index" width="100" />
-      <el-table-column prop="no" label="序号" width="100" />
+      <!-- <el-table-column prop="no" label="序号" width="100" /> -->
       <el-table-column prop="title" label="舆情标题" width="300" />
       <el-table-column prop="time" label="上传时间" width="180" />
       <el-table-column prop="name" label="用户名" width="100" />
       <!-- eslint-disable-next-line -->
       <el-table-column label="评估结果" width="200" slot-scope="scope">
-        <el-button @row-click="handleButtonIfpass(index, 0)"  @click="IfStatus(0)" plain>通过</el-button>
-        <el-button @row-click="handleButtonIfpass(index, 1)" @click="IfStatus(1)"
+        <el-button
+          @row-click="handleButtonIfpass(index, 0)"
+          @click="IfStatus(0)"
+          plain
+          >通过</el-button
+        >
+        <el-button
+          @row-click="handleButtonIfpass(index, 1)"
+          @click="IfStatus(1)"
           >不通过</el-button
         >
       </el-table-column>
@@ -83,10 +99,10 @@ export default {
       ],
     };
   },
-    methods: {
-        IfStatus(status) {
-            status = status;
-        },
+  methods: {
+    IfStatus(status) {
+      status = status;
+    },
     handleButtonDetail(row) {
       this.dialogTableVisible = true;
       // 处理按钮点击事件
@@ -101,14 +117,14 @@ export default {
       console.log(token);
       const url = "http://124.223.59.64:80/opinion/list" + type;
       console.log(url);
-      1;
       axios
         .get(url, token)
         .then((response) => {
           console.log(response);
-          response.data.data.forEach((dataItem, index) => {
+          response.data.data.reverse().forEach((dataItem, index) => {
             this.tableData.push({
               no: index + 1,
+              id: dataItem.id,
               title: dataItem.title,
               time: dataItem.updateTime,
               name: dataItem.nickName,
@@ -126,18 +142,17 @@ export default {
     },
 
     handleButtonIfpass(item) {
-      const id = toRaw(item); // 获取当前行的ID
-        console.log("Clicked ID:", id); // 这里是点击的 ID
-      const status = this.status
+      const items = toRaw(item); // 获取当前行的ID
+      console.log("Clicked ID:", items.id); // 这里是点击的 ID
+      const status = this.status;
       console.log("Status:", status); // 通过或不通过的状态
       const token = sessionStorage.getItem("token");
       axios.defaults.headers.common["token"] = ` ${token}`;
       console.log(token);
-      const url = "http://124.223.59.64:80/opinion/update";
+      const url = "http://124.223.59.64:80/opinion/update/" + items.id;
       console.log(url);
-      console.log();
       axios
-        .delete(url, token, status)
+        .post(url, token)
         .then((response) => {
           console.log(response);
           if (response.data.code != 1) {
@@ -159,12 +174,45 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.news-ack-header {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.news-ack-btn-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+// 表格和内容区块自适应
+.el-scrollbar {
+  width: 100%;
+  min-width: 0;
+}
+.el-table {
+  width: 100% !important;
+  min-width: 320px;
+}
+// 响应式优化
+@media (max-width: 600px) {
+  .news-ack-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .news-ack-btn-group {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
 .middle {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-
 .scrollbar-demo-item {
   display: flex;
   align-items: center;

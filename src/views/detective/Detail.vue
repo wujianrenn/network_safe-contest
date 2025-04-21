@@ -16,9 +16,21 @@
         <!-- <p>具体内容</p> -->
         <p>{{ itemName }}</p>
         <span style="float: right">{{ itemTime }}</span>
+        <br>
+        <h3>详情：{{ itemId }}</h3>
+        <span>{{ itemContent }}</span>
       </el-card>
 
       <div>
+        <el-button
+          v-for="button in buttons"
+          :key="button.text"
+          :type="button.type"
+          text
+          style="float: right"
+          @click="answer()"
+          >{{ button.text }}</el-button
+        >
         <h2 class="demonstration">请侦探在下方对该事件的真实性进行投票</h2>
         <br />
         <div class="slider-demo-block">
@@ -45,7 +57,8 @@
               <span style="float: right">{{ item.time }}</span>
             </div>
           </template>
-          {{ item.commented }}
+          <!-- {{ item.commented }} -->
+          <div>真，该人物的确被造谣。据报道，在2023年8月的一起事件中，开国少将何克希的外孙女石女士公开指责自媒体私自盗用并曲解外公的照片，将他错认为“革命叛徒”。经过搜寻，石女士发现这些涉及外公的视频被22个自媒体账号转载或发布在8个不同的社交平台上，其中最早的视频发布于今年4月。浙江日报报道，何克希为四川峨眉人，1929年加入中国共产党，随后便开始了长达53年的革命生涯。1949年4月，何克希率部参加解放南京的战役。1955年被授予少将军衔和一级独立自由勋章、一级解放勋章。1966年，何克希到浙江工作，担任浙江省政协副主席，直至临终。</div>
         </el-card>
       </el-row>
 
@@ -66,27 +79,56 @@
 <script setup>
 import { ref, onMounted, toRaw, reactive } from "vue";
 import { ChatDotRound, UserFilled, Plus } from "@element-plus/icons";
+import { createRouter, createWebHistory } from 'vue-router';
 import axios from "axios";
+import { useRouter } from "vue-router";
 
 const components = {
   UserFilled,
   ChatDotRound,
 };
+const router = useRouter();
+const buttons = [{ type: "primary", text: "AI甄别" }];
 
 let geturl = window.location.href;
 
 let getqyinfo = geturl.split("?")[1];
 let getqys = getqyinfo.split("&");
-let itemNo = getqys[0].split("=")[1];
+let itemContent = decodeURI(getqys[0].split("=")[1]);
 let itemTitle = decodeURI(getqys[1].split("=")[1]);
 let itemTime = getqys[2].split("=")[1];
 let itemName = decodeURI(getqys[3].split("=")[1]);
-let itemId = getqys[4].split("=")[1];
+
+if(getqys[4])
+ { 
+   var itemId=getqys[4].split("=")[1];
+  //  return itemId;
+}
+if (getqys[5]) {
+  let itemIds = decodeURI(getqys[5].split("=")[1]);
+}
+
+// let itemId = decodeURI(getqys[4].split("=")[1]);
 
 const value1 = ref(93);
 const listData = ref([]);
 
 const input = ref("");
+
+const answer = () => {
+  router.push({
+    path: "/account/answer",
+    query: {
+      itemContent: itemContent,
+      itemName: itemName,
+      itemId: decodeURI(itemId),
+      itemTitle: itemTitle,
+      itemTime: itemTime,
+
+    },
+    params: {},
+  });
+};
 
 const addComment = () => {
   const comments = input.value; // 获取输入框的值
@@ -97,8 +139,8 @@ const addComment = () => {
     userId: "414",
   });
   const url = "http://124.223.59.64:80/comment/add";
-  console.log(url)
-  axios.defaults.headers.common['Content-Type'] = 'application/json';
+  console.log(url);
+  axios.defaults.headers.common["Content-Type"] = "application/json";
   const token = sessionStorage.getItem("token");
   axios.defaults.headers.common["token"] = ` ${token}`;
   axios

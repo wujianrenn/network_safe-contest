@@ -34,6 +34,7 @@
         "js-base64": "^3.7.2",
         "sass": "^1.50.0",
         "secure-ls": "^1.2.6",
+        "vite-plugin-compression": "^0.5.1",
         "vite-plugin-imp": "^2.1.7"
     }
 }

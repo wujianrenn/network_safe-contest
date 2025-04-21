@@ -16,7 +16,7 @@
   </el-drawer> -->
 
   <!-- <input type="file" ref="fileInput" @click="uploadImage" /> -->
-  <input type="file" ref="fileInput" @change="handleFileChange"/>
+  <input type="file" ref="fileInput" @change="handleFileChange" />
   <button @click="uploadImage">上传</button>
 
   <el-drawer v-model="drawer1" direction="rtl" :with-header="false">
@@ -79,11 +79,7 @@
     <div class="middle">
       <h2 class="title">一辨真假</h2>
       <div style="width: 260px; position: fixed; top: 87px; right: -5px">
-        <el-button
-          type="primary"
-          class="select-btn"
-          @click="(drawer1 = true)"
-        >
+        <el-button type="primary" class="select-btn" @click="drawer1 = true">
           选择照片
         </el-button>
         <!-- <el-button type="primary" class="select-btn" @click="drawer2 = true">
@@ -125,15 +121,18 @@
 <script>
 import axios from "axios";
 // import { proxy } from '../../vite.config.js';
-import { ref, toRaw } from "vue";
+import { ref, toRaw ,getCurrentInstance} from "vue";
 import { ElMessageBox, ElMessage } from "element-plus";
 import md5 from "js-md5";
-import { Plus , ZoomIn, Delete, Download} from "@element-plus/icons";
+import { Plus, ZoomIn, Delete, Download } from "@element-plus/icons";
 import { useRouter } from "vue-router";
 
 export default {
   components: {
-    Plus,ZoomIn,Delete,Download
+    Plus,
+    ZoomIn,
+    Delete,
+    Download,
   },
   data() {
     const router = useRouter();
@@ -177,14 +176,14 @@ export default {
       handledURL: "",
       file: null,
       textarea: ref(""),
-      router: '',
+      router: "",
       selectedFile: null,
     };
   },
   methods: {
     onBeforeUpload(file) {
       this.selectedFile = file; // 更新选中的文件
-      console.log(this.selectedFile)
+      console.log(this.selectedFile);
     },
     // // 读取图片文件并转换为Base64格式
     // readFileAsBase64(file) {
@@ -218,61 +217,59 @@ export default {
     },
     uploadImage() {
       const selectedFile = this.$refs.fileInput.files[0];
-      console.log(111,selectedFile)
+      console.log(111, selectedFile);
       let formData = new FormData();
-      formData.set("file", selectedFile)
-      console.log(2,formData.entries[1])
+      formData.append("file", selectedFile);
+      console.log(2, formData);
       console.log("FormData entries:");
       for (let pair of formData.entries()) {
-          console.log(pair[0], pair[1]);
+        console.log(pair[0], pair[1]);
       }
 
       axios.defaults.headers.post["Content-Type"] = "multipart/form-data";
       const token = sessionStorage.getItem("token");
       axios.defaults.headers.common["token"] = ` ${token}`;
       axios
-        .post("http://124.223.59.64:80/common/analyse", selectedFile, token)
+        .post("http://124.223.59.64:80/common/analyse", formData, token)
         .then((response) => {
-          console.log(response)
-          console.log(111)
+          console.log(response);
+          const data = response.data.data[0];
+          console.log('data.id:',data.id)
+          this.$router.push({
+          path: "/account/detail",
+            query: {
+              itemContent: data.content,
+              itemTitle: data.title,
+            // itemUserId: data.userId,
+              itemTime: data.time,
+              itemStatus: response.status,
+              itemId : data.id,
+          },
+          params: {},
+        });
         });
     },
-
-    // onBeforeUpload(file) {
-    //   console.log(223, file);
-    // },
 
     confirmClickPicture() {
       ElMessageBox.confirm(` 确认提交 ?`)
         .then(() => {
-          console.log(111)
+          console.log(111);
           console.log(44, this.selectedFile);
-          // let ff = new FormData();
           ff.append("file", file);
-          // f.raw.header.Content-Type = 'multipart/form-data'
-          console.log("11111");
-          
+          console.log("11111",ff);
 
           const boundary = Math.random().toString().slice(2);
           const token = sessionStorage.getItem("token");
           axios.defaults.headers.common["token"] = ` ${token}`;
           const url = `http://124.223.59.64:80/common/analyse`;
-          // axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
           axios({
             method: "post",
             url,
-            data: { ff, token },
-            //name: "file",
-            headers: {
-              "Content-Type": "multipart/form-data",
-              // "boundary": `${boundary}`,
-            },
-            dataType: "json",
+           ff ,token ,
           })
             .then((response) => {
               const publicKey = response.data.publicKey;
               console.log(response.data);
-              // sessionStorage.setItem('token',res.token)
             })
             .catch((error) => {
               console.error(error);
@@ -283,9 +280,8 @@ export default {
           // catch error
         });
       setTimeout(() => {
-        this.$router.push('/account/answer');
-      }, 2000);
-        
+        this.$router.push("/account/answer");
+      }, 1000);
     },
 
     handleRemove(file) {
@@ -301,16 +297,16 @@ export default {
 
     handleDownload(file) {
       const url = file.url.split("blob:")[1];
-      console.log(url)
+      console.log(url);
       this.dialogImageUrl = url;
       this.dialogVisible = true;
       const f = toRaw(file);
-      console.log(f)
+      console.log(f);
       this.handledURL = md5(this.dialogImageUrl);
       console.log(this.handledURL);
 
       this.selectedFile = f; // 更新选中的文件
-      console.log(this.selectedFile)
+      console.log(this.selectedFile);
     },
 
     handleCheckedChange() {
@@ -336,47 +332,32 @@ export default {
 
     start() {
       console.log(this.textarea);
-
-      // axios.defaults.headers.common["token"] = ` ${token}`;
-      // const token = "18e9e259-8c8a-438b-aa33-a2ef6fdff16c";
-      // axios.defaults.headers.common["AUTHORIZATION"] = token;
-
       const token = sessionStorage.getItem("token");
       axios.defaults.headers.common["token"] = ` ${token}`;
-      // const url = "/checkNews/";
-      let url = 'http://124.223.59.64:8083/checkNews'
-      // const url = proxy.target + '/checkNews';
-      console.log(url);
-      const textarea = {
-        news: this.textarea,
-      };
       axios
         .post(
-          url,
-          textarea,
-          token,
-          // {
-          // headers: {
-          //   "Content-Type": "text/plain"
-          // }}
+          'http://124.223.59.64:8083/checkNews',
+          { "news": this.textarea, token },
+          {headers: {
+            "AUTHORIZATION": "18e9e259-8c8a-438b-aa33-a2ef6fdff16c"
+          }}
         )
         .then((response) => {
-          // console.log(response.data.data.check_status);
-          // console.log(response.data.data.raw_response);
-          console.log(111);
-          ElMessageBox.alert("此舆情为真", "Title", {
+          console.log(111,response);
+          ElMessageBox.alert("此舆情为真", `${response.data.check_status}`, {
             confirmButtonText: "OK",
-            callback: (action) => {
-              ElMessage({
-                type: "info",
-                message: `action: ${action}`,
-              });
-            },
           });
-          if (response.data.code != 1) {
-            alert("网络出现问题，请重试!");
-            return;
-          }
+          this.$router.push({
+            path: "/account/detail",
+            query: {
+              status: response.data.check_status,
+              title: this.textarea,
+              header: response.headers.content - length,
+              type: response.request.statusText,
+              content: response.data.raw_response,
+            },
+            params: {},
+          });
         })
         .catch((error) => {
           console.error(1, error);
@@ -387,9 +368,9 @@ export default {
         callback: () => {
           ElMessage({
             type: "success",
-            message: `鉴别完成`,
+            message: `提交成功`,
           });
-          this.$router.push('/account/answer' );
+
         },
       });
     },

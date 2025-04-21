@@ -34,7 +34,7 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item prop="phone">
+          <!-- <el-form-item prop="phone">
             <el-input
               v-model.trim="loginFormState.phone"
               maxlength="16"
@@ -77,7 +77,7 @@
                 <icons account="Lock"></icons>
               </template>
             </el-input>
-          </el-form-item>
+          </el-form-item> -->
           
           <el-form-item>
             <el-button

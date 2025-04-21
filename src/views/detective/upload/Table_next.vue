@@ -15,14 +15,26 @@
           <el-option label="经济舆情" value="eco" />
         </el-select>
       </el-form-item>
-      <el-form-item label="发生地点">
+      <!-- <el-form-item label="发生地点">
         <el-select v-model="form.region" placeholder="请选择发生地点">
-          <el-option label="陕西省" value="shannxi" />
+          <el-option label="陕西" value="shannxi" />
           <el-option label="北京" value="beijing" />
           <el-option label="上海" value="shanghai" />
-          <el-option label="郑州" value="zhengzhou" />
+          <el-option label="河南" value="zhengzhou" />
+          <el-option label="浙江" value="shanghai" />
+          <el-option label="广东" value="shanghai" />
+          <el-option label="新疆" value="shanghai" />
+          <el-option label="西藏" value="shanghai" />
+          <el-option label="广西" value="shanghai" />
+          <el-option label="云南" value="shanghai" />
+          <el-option label="河北" value="shanghai" />
+          <el-option label="山东" value="shanghai" />
+          <el-option label="山西" value="shanghai" />
+          <el-option label="黑龙江" value="shanghai" />
+          <el-option label="辽宁" value="shanghai" />
+          <el-option label="江苏" value="shanghai" />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item class="item" label="舆情内容">
         <!-- <textarea  v-model="form.desc" name="" id="" cols="300" rows="10"></textarea> -->
         <el-input v-model="form.content" type="textarea" :rows="6" />
@@ -43,21 +55,6 @@
   </div>
 </template>
 
-<!-- <script>
-  export default {
-    // name: 'News', // 组件名称
-    data() {
-      return {
-        // 数据
-        
-      }
-    },
-    methods: {
-      // 方法
-    },
-  }
-  </script> -->
-
 <script>
 import { reactive } from "vue";
 import { ElNotification } from "element-plus";
@@ -77,7 +74,6 @@ export default {
     });
 
     const token = sessionStorage.getItem("token");
-    console.log("1");
     axios.defaults.headers.common["token"] = ` ${token}`;
 
     const onSubmit = () => {
@@ -85,7 +81,6 @@ export default {
       axios
         .post(url, form, token)
         .then((response) => {
-          // console.log(token)
           console.log(response.data);
         })
         .catch((error) => {

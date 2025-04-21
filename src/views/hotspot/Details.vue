@@ -1,36 +1,41 @@
 <template>
-  <div class="centainer">
-    <div class="search">
-      <input type="ltext" name="" id="" class="content" v-model="ltext" />
-      <el-button size="large" :icon="Search" round @click="start"
-        >搜索</el-button
-      >
-      <!-- 搜索查询，调接口 -->
-    </div>
-    <el-card class="box-card">
-      <template #header>
-        <div class="card-header">
-          <span style="font-size: 24px">排名</span>
-          <span style="font-size: 24px; margin-right: 100px; ">舆情名称</span>
-          <span style="font-size: 24px; float: right;">舆情热度</span>
+  <div class="content-wrapper">
+    <div class="content-container">
+      <div class="search-container">
+        <div class="search-area">
+          <div class="search-input-wrapper">
+            <input type="text" class="search-input" placeholder="请输入搜索内容" v-model="ltext" />
+            <el-button type="primary" :icon="Search" round @click="start" class="search-btn">搜索</el-button>
+          </div>
+          <el-button @click="handleButtonClick((type = 0))" class="hot-btn">十大热点</el-button>
         </div>
-      </template>
-      <div v-for="item in listData" @click="handleItemClick(item)" :key="item.no" class="ltext-item"  >
-       <span style="margin-right: 200px;">{{ item.no }}</span> 
-        <span>{{ item.title }}</span>
-        <!-- <span :style="{ color: changeColor }" class="startnumber">{{
-          startNumber
-        }}</span> -->
-        <span style="float: right; margin-right: 20px;" @click="good">
-          <!-- 点击后，让图标变红，换红色图标 -->
-          <span v-if="item.no<2"><img src="./fire.png" alt="" width="26" height="24"  v-for="index in 1"/></span>
-          <span v-if="item.no<8"><img src="./fire.png" alt="" width="26" height="24"  v-for="index in 3"/></span>
-          <span v-else="item.no<10"><img src="./fire.png" alt="" width="26" height="24"  v-for="index in 2"/></span>
-          <!-- <img :src="imgSrc" alt="" width="26" height="24"> -->
-          <img src="./fire.png" alt="" width="26" height="24" />
-        </span>
       </div>
-    </el-card>
+      
+      <el-card class="box-card">
+        <template #header>
+          <div class="card-header">
+            <div class="header-item header-rank">排名</div>
+            <div class="header-item header-title">舆情名称</div>
+            <div class="header-item header-heat">舆情热度</div>
+          </div>
+        </template>
+        <div
+          v-for="item in listData"
+          @click="handleItemClick(item)"
+          :key="item.no"
+          class="ltext-item"
+        >
+          <div class="item-rank">{{ item.no }}</div>
+          <div class="item-title">{{ item.title }}</div>
+          <div class="item-actions">
+            <span :style="{ color: changeColor }" class="item-heat">{{ item.number }}</span>
+            <span class="like-btn" @click.stop="good(item.id)">
+              <img :src="imgSrc" alt="点赞" class="like-icon" />
+            </span>
+          </div>
+        </div>
+      </el-card>
+    </div>
   </div>
 </template>
 
@@ -41,91 +46,81 @@ import { ElMessage, ElMessageBox } from "element-plus";
 
 export default {
   data() {
-    const listData = [
-      {
-        no: "1",
-        title: "钟南山称今年6月底或是今年疫情高峰？",
-        time: "2022.5.16",
-        name: "张三",
-      },
-      {
-        no: "2",
-        title: "最近AI诈骗盛行？",
-        time: "2022.5.16",
-        name: "张三",
-      },
-      {
-        no: "3",
-        title: "G7峰会上拜登称美中关系会短时间内缓和，可信吗？",
-        time: "2022.5.16",
-        name: "张三",
-      },
-      {
-        no: "4",
-        title: "桂林371所学校因暴雨停课？",
-        time: "2022.5.16",
-        name: "张三",
-      },
-      {
-        no: "5",
-        title: "华为研发出量子芯片？",
-        time: "2022.5.16",
-        name: "张三",
-      },
-      {
-        no: "6",
-        title: "oppo终止哲库业务是因为美国的威胁？",
-        time: "2022.5.16",
-        name: "张三",
-      },
-      {
-        no: "7",
-        title: "58同城近期大量裁员？",
-        time: "2022.5.16",
-        name: "张三",
-      },
-      {
-        no: "8",
-        title: "新冠复阳人数最近特别多？",
-        time: "2022.5.16",
-        name: "张三",
-      },
-      {
-        no: "9",
-        title: "中亚峰将会使中国-中亚关系开启新纪元",
-        time: "2022.5.16",
-        name: "张三",
-      },
-      {
-        no: "10",
-        title: "微软：中国已批准其收购动视暴雪",
-        time: "2022.5.16",
-        name: "张三",
-      },
-    ];
+    const listData = [];
     return {
       ltext: "",
       listData,
-      startNumber: 1000,
-      imgSrc: "./爱心.png",
+      startNumber: 0,
+      imgSrc:
+        "https://img.51miz.com/preview/element/00/01/04/61/E-1046130-B357714A.jpg",
       clicked: false,
       changeColor: "black",
       change: false,
+      number: '',
     };
   },
   methods: {
+    handleButtonClick() {
+      const token = sessionStorage.getItem("token");
+      console.log("1");
+      axios.defaults.headers.common["token"] = ` ${token}`;
+      console.log(token);
+      const url = "http://124.223.59.64:80/opinion/show10";
+      console.log(url);
+      axios
+        .get(url, token)
+        .then((response) => {
+          console.log(response);
+          response.data.data.forEach((dataItem, index) => {
+            this.listData.push({
+              no: index + 1,
+              title: dataItem.title,
+              time: dataItem.updateTime,
+              name: dataItem.nickName,
+              id: dataItem.id,
+            });
+            const url2 = 'http://124.223.59.64:80/opinion/showLike/' + dataItem.id;
+        axios
+          .get(url2, token)
+          .then((response) => {
+            const likeCount = response.data.data;
+            // Update the corresponding listData item with the like count
+            this.listData[index].number = likeCount;
+          if (response.data.code != 1) {
+            alert("网络出现问题，请重试!");
+            return;
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+          });
+          console.log(toRaw(this.listData), "111");
+          if (response.data.code != 1) {
+            alert("网络出现问题，请重试!");
+            return;
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+
     handleItemClick(item) {
       console.log("Clicked item:", toRaw(item));
-      this.$router.push({
-        path: "./news/lastest" + item.no,
-        query: {
-          itemId: item.no,
-          itemTitle: item.title,
-          itemTiem: item.time,
-          itemName: item.name,
-          itemDescription: item.description,
-        },
-      });
+      setTimeout(() => {
+        this.$router.push({
+          path: "/account/detail",
+          query: {
+            itemNo: item.no,
+            itemTitle: item.title,
+            itemTime: item.time,
+            itemName: item.name,
+            itemId: item.id,
+          },
+          params: {},
+        });
+      }, 2000);
     },
 
     start() {
@@ -140,10 +135,8 @@ export default {
         .then((response) => {
           console.log(response.data);
           ElMessageBox.alert(
-            // response.data.data[0].content,
-            // response.data.data[0].title,
             {
-              '搜索结果': "成功",
+              搜索结果: "成功",
             }
           );
         })
@@ -151,22 +144,29 @@ export default {
           console.error(error);
         });
     },
-    good() {
-      this.startNumber = this.startNumber + 1;
+    good(id) {
+      // this.startNumber = this.startNumber + 
+      console.log('id:', id)
+      
+      let value = 0;
       if (!this.clicked) {
-        this.imgSrc = "./爱心 (1).png";
+        this.imgSrc =
+          "https://tse1-mm.cn.bing.net/th/id/OIP-C.JPL7jGmZwXlhWiDpEEilJwHaFo?w=278&h=211&c=7&r=0&o=5&dpr=1.5&pid=1.7";
       } else {
-        this.imgSrc = "./爱心.png";
+        this.imgSrc =
+          "https://img.51miz.com/preview/element/00/01/04/61/E-1046130-B357714A.jpg";
       }
       this.clicked = !this.clicked;
 
-      let value = 0;
+      
       const opinionid = 123;
       if (!this.change) {
-        this.changeColor = "fire";
+        this.changeColor = "red";
+        this.startNumber = this.startNumber + 1
         value = 1;
       } else {
         this.changeColor = "black";
+        this.startNumber = this.startNumber -1
         value = 0;
       }
       this.change = !this.change;
@@ -176,8 +176,9 @@ export default {
       const token = sessionStorage.getItem("token");
       axios.defaults.headers.common["token"] = ` ${token}`;
       const url = "http://124.223.59.64:80/opinion/like";
+      const opinionId = id;
       axios
-        .put(url, token, value, opinionid)
+        .put(url, {value, opinionId},token,)
         .then((response) => {
           console.log(response.data);
           if (response.data.code != 1) {
@@ -194,63 +195,258 @@ export default {
 </script>
 
 <style scoped>
-.startnumber {
-  float: right;
-  font-size: 8px;
+/* 全局容器样式 */
+.content-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
-.ltext-item {
-  margin-top: 20px;
+
+/* 内容容器样式 */
+.content-container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 5vh;
+  padding-left: 16px;
+  padding-right: 16px;
+  box-sizing: border-box;
 }
-.ltext-item:first-child {
-  margin-top: 0px;
+
+/* 搜索区域样式 */
+.search-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
 }
+
+.search-area {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.search-input-wrapper {
+  display: flex;
+  flex: 1;
+  min-width: 280px;
+  max-width: 800px;
+}
+
+.search-input {
+  flex: 1;
+  height: 40px;
+  border: 1px solid #dcdfe6;
+  border-radius: 20px 0 0 20px;
+  padding: 0 15px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.search-input:focus {
+  border-color: #409eff;
+}
+
+.search-btn {
+  height: 40px;
+  border-radius: 0 20px 20px 0 !important;
+  margin: 0 !important;
+}
+
+.hot-btn {
+  height: 40px;
+}
+
+/* 卡片样式 */
+.box-card {
+  width: 100%;
+  max-width: 700px;
+  margin-top: 16px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  animation: breathe 4s infinite ease-in-out;
+}
+
+@keyframes breathe {
+  0% {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 4px 20px 0 rgba(64, 158, 255, 0.15);
+  }
+  100% {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  }
+}
+
+.box-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px 0 rgba(64, 158, 255, 0.2);
+}
+
+/* 卡片头部样式 */
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 12px 0;
 }
 
-.ltext {
-  font-size: 14px;
+.header-item {
+  font-size: 18px;
+  font-weight: 600;
+  color: #303133;
 }
 
-.item {
-  margin-bottom: 18px;
+.header-rank {
+  width: 15%;
+  text-align: center;
 }
 
-.box-card {
-  width: 900px;
-  margin: 50px 90px;
+.header-title {
+  width: 60%;
+  text-align: left;
 }
-.centainer {
-  width: 90%;
-  height: calc(100vh - 284px);
-  background-color: rgb(240, 240, 249);
-  /* display: flex; */
-  /* justify-content: space-between; */
+
+.header-heat {
+  width: 25%;
+  text-align: right;
+}
+
+/* 列表项样式 */
+.ltext-item {
+  display: flex;
   align-items: center;
-  border-radius: 4%;
-  padding: 20px 50px 0px 40px;
+  padding: 16px 0;
+  border-bottom: 1px solid #ebeef5;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.item {
-  width: 800px;
+.ltext-item:hover {
+  background-color: #f5f7fa;
 }
 
-.center {
-  margin: 130px 100px 10px 300px;
+.ltext-item:last-child {
+  border-bottom: none;
 }
 
-.el-button {
-  margin-right: 30px;
+.item-rank {
+  width: 15%;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
 }
 
-.search {
-  margin: 0 100px;
-  margin-top: 50px;
-  position: relative;
-  bottom: -10px;
-  left: 90px;
+.item-title {
+  width: 60%;
+  text-align: left;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-actions {
+  width: 25%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.item-heat {
+  font-size: 14px;
+  margin-right: 16px;
+}
+
+.like-btn {
+  cursor: pointer;
+  padding: 4px;
+}
+
+.like-icon {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.2s;
+}
+
+.like-btn:hover .like-icon {
+  transform: scale(1.2);
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+  .content-container {
+    padding-top: 3vh;
+  }
+  
+  .search-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-input-wrapper {
+    max-width: 100%;
+  }
+  
+  .hot-btn {
+    width: 100%;
+  }
+  
+  .header-item {
+    font-size: 16px;
+  }
+  
+  .item-rank {
+    width: 20%;
+  }
+  
+  .item-title {
+    width: 50%;
+  }
+  
+  .item-actions {
+    width: 30%;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-item {
+    font-size: 14px;
+  }
+  
+  .item-rank {
+    font-size: 14px;
+  }
+  
+  .item-title {
+    font-size: 14px;
+  }
+  
+  .item-heat {
+    font-size: 12px;
+    margin-right: 8px;
+  }
+  
+  .like-icon {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .content {
