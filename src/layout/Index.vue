@@ -87,6 +87,13 @@ export default {
                 text-align: center;
                 overflow: hidden;
                 user-select: none;
+                background-color: #fff;
+                border-top: none !important;
+                box-shadow: none !important;
+                position: relative;
+                &::before {
+                    content: none !important;
+                }
             }
         }
     }

@@ -228,12 +228,11 @@ export default {
 }
 
 .search-area {
+  display: flex;
   width: 100%;
   max-width: 700px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
   gap: 16px;
 }
@@ -243,17 +242,42 @@ export default {
   flex: 1;
   min-width: 280px;
   max-width: 800px;
+  transition: all 0.3s ease;
+  /* animation: search-breathe 4s infinite ease-in-out; */
+  align-items: center;
+  height: 40px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+@keyframes search-breathe {
+  0% {
+    box-shadow: 0 0 0 rgba(64, 158, 255, 0);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(64, 158, 255, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(64, 158, 255, 0);
+  }
+}
+
+.search-input-wrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(64, 158, 255, 0.15);
 }
 
 .search-input {
   flex: 1;
   height: 40px;
   border: 1px solid #dcdfe6;
+  border-right: none;
   border-radius: 20px 0 0 20px;
   padding: 0 15px;
   font-size: 14px;
   outline: none;
   transition: all 0.2s;
+  box-sizing: border-box;
 }
 
 .search-input:focus {
@@ -264,10 +288,34 @@ export default {
   height: 40px;
   border-radius: 0 20px 20px 0 !important;
   margin: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .hot-btn {
   height: 40px;
+  transition: all 0.3s ease;
+  /* animation: hot-btn-breathe 4s infinite ease-in-out; */
+}
+
+@keyframes hot-btn-breathe {
+  0% {
+    box-shadow: 0 0 0 rgba(64, 158, 255, 0);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(64, 158, 255, 0.25);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(64, 158, 255, 0);
+  }
+}
+
+.hot-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(64, 158, 255, 0.2);
 }
 
 /* 卡片样式 */
@@ -279,7 +327,7 @@ export default {
   border-radius: 8px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  animation: breathe 4s infinite ease-in-out;
+  /* animation: breathe 4s infinite ease-in-out;/ */
 }
 
 @keyframes breathe {

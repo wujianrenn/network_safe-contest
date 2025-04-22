@@ -1,18 +1,16 @@
 <template>
-    <div class="centainer">
-      <el-card class="box-card">
-        <template #header>
-          <div class="card-header">
-            <span style="font-size:24px">全部上传记录</span>
-          </div>
-        </template>
-        <div v-for="item in listData" :key="item.no" class="text-item" >
-          <span style="margin-right: 100px;">{{ item.no }}</span> 
-        <span>{{ item.title }}</span>
-        </div>
-      </el-card>
+  <div class="record-content">
+    <div class="record-list">
+      <div class="record-list-header">
+        <span class="list-title">全部上传记录</span>
+      </div>
+      <div v-for="item in listData" :key="item.no" class="record-item">
+        <span class="record-number">{{ item.no }}</span>
+        <span class="record-title">{{ item.title }}</span>
+      </div>
     </div>
-  </template>
+  </div>
+</template>
   
   <script>
   export default {
@@ -71,38 +69,77 @@
   </script>
 
   <style scoped>
-    .text-item{
-    margin-top:20px;
-  }
-  .text-item:first-child{
-    margin-top: 0px;
-  }
-  .card-header {
+.record-content {
+  width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  padding-top: 10vh;
+}
+
+.record-list {
+  width: 100%;
+  max-width: 850px;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 0 20px;
+}
+
+.record-list-header {
+  padding: 20px 0;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.list-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.record-item {
+  display: flex;
   align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
 }
 
-.text {
-  font-size: 14px;
+.record-item:hover {
+  background-color: #f9f9f9;
+  transform: translateX(5px);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
 }
 
-.item {
-  margin-bottom: 18px;
+.record-item:last-child {
+  border-bottom: none;
 }
 
-.box-card {
-  width: 800px;
-  margin: 150px 150px;
+.record-number {
+  width: 60px;
+  text-align: center;
+  font-weight: bold;
+  color: #409eff;
+  margin-right: 30px;
+  font-size: 18px;
 }
-    .centainer {
-        width: 90%;
-        height: calc(100vh - 284px);
-        background-color: rgb(240, 240, 249);
-        /* display: flex; */
-        /* justify-content: space-between; */
-        align-items: center;
-        border-radius: 4%;
-        padding: 20px 50px 0px 40px;
-    }
+
+.record-title {
+  flex: 1;
+  font-size: 16px;
+  color: #303133;
+}
+
+@media (max-width: 768px) {
+  .record-content {
+    padding-top: 5vh;
+  }
+  
+  .record-list {
+    max-width: 95%;
+  }
+  
+  .record-number {
+    margin-right: 10px;
+  }
+}
   </style>

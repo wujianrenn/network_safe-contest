@@ -180,18 +180,12 @@ export default {
     });
     chart2.setOption({
       color: ["#FF5722", "#009688", "#2196F3", "#FFC107"],
-      //   title: {
-      //     text: 'Referer of a Website',
-      //     subtext: 'Fake Data',
-      //     left: 'center'
-      //   },
       tooltip: {
         trigger: "item",
       },
       legend: {
         orient: "horizontal",
         top: 15,
-        left: "left",
         left: 15,
         textStyle: {
           // 设置图例文本样式
@@ -564,7 +558,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 /****** PLACE YOUR CUSTOM STYLES HERE ******/
 
 .el-table::before {
@@ -630,7 +624,7 @@ textarea {
 html,
 .wpbox {
   color: #fff;
-  background: #00065b url(./img/bg.jpg);
+  background: #00065b url("./img/bg.jpg");
   background-size: 100% 100%;
   background-position: 0 0;
   width: 80%;
@@ -726,7 +720,7 @@ html,
 }
 
 .lefttime {
-  background: url(./img/time.png);
+  background: url("./img/time.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -755,7 +749,7 @@ html,
   color: #fff;
 }
 */ .lefttoday {
-  background: url(./img/left1box.png);
+  background: url("./img/left1box.png");
   background-repeat: no-repeat;
   background-position: -3px 2px;
   width: 350px;
@@ -881,7 +875,7 @@ html,
 }
 
 .leftclass {
-  background: url(./img/leftb1.png);
+  background: url("./img/leftb1.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -889,7 +883,7 @@ html,
   height: 291px;
 }
 .leftbox2_table {
-  background: url(./img/leftbox2.png);
+  background: url("./img/leftbox2.png");
   background-repeat: no-repeat;
   background-position: -2px -2px;
   width: 354px;
@@ -910,7 +904,7 @@ html,
   overflow: hidden;
 }
 .left2_table li {
-  background: rgba(1, 202, 217, 0.2) url(./img/icosjx.png) no-repeat top left;
+  background: rgba(1, 202, 217, 0.2) url("./img/icosjx.png") no-repeat top left;
   position: relative;
   overflow: hidden;
   padding: 2% 6%;
@@ -937,10 +931,10 @@ html,
   color: #00c2fd;
 }
 .left2_table li.bg {
-  background: rgba(0, 255, 255, 0.4) url(./img/icosjx.png) no-repeat top left;
+  background: rgba(0, 255, 255, 0.4) url("./img/icosjx.png") no-repeat top left;
 }
 .mrbox_tr_box {
-  background: url(./img/rbox1.png);
+  background: url("./img/rbox1.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -949,7 +943,7 @@ html,
 }
 
 .mrboxtm-mbox {
-  background: url(./img/midtop.png);
+  background: url("./img/midtop.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -957,7 +951,7 @@ html,
   height: 63.6%;
 }
 .mrboxtm-b1 {
-  background: url(./img/mbox1.png);
+  background: url("./img/mbox1.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -966,7 +960,7 @@ html,
   float: left;
 }
 .mrboxtm-b2 {
-  background: url(./img/mbox2.png);
+  background: url("./img/mbox2.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -974,10 +968,10 @@ html,
   height: 233px;
   float: right;
 }
-/* .mrbox_tr_box{background:url( ./img/rbox1.png);background-size: 100% 100%; background-repeat: no-repeat;background-position: top center; width:350px; height:680px;} */
+/* .mrbox_tr_box{background:url("./img/rbox1.png");background-size: 100% 100%; background-repeat: no-repeat;background-position: top center; width:350px; height:680px;} */
 
 .hdmrboxtm-mbox {
-  background: url(./img/hdbj.png);
+  background: url("./img/hdbj.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -986,7 +980,7 @@ html,
 }
 
 .rbottom_box1 {
-  background: url(./img/b-rbox2.png);
+  background: url("./img/b-rbox2.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -995,7 +989,7 @@ html,
   float: left;
 }
 .rbottom_box2 {
-  background: url(./img/bbox2.png);
+  background: url("./img/bbox2.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1005,7 +999,7 @@ html,
   margin-left: 0.8%;
 }
 .rbottom_box3 {
-  background: url(./img/b-rbox2.png);
+  background: url("./img/b-rbox2.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1058,7 +1052,7 @@ html,
   width: 100%;
 }
 .topbnt_left li {
-  background: url(./img/bnt.png) center;
+  background: url("./img/bnt.png") center;
   font-size: 14px;
   line-height: 33px;
   background-repeat: no-repeat;
@@ -1070,7 +1064,7 @@ html,
 }
 .topbnt_left li.active,
 .topbnt_right li.active {
-  background: url(./img/bntactive.png) no-repeat center;
+  background: url("./img/bntactive.png") no-repeat center;
 }
 .topbnt_left li a {
   text-decoration: none;
@@ -1090,7 +1084,7 @@ html,
   width: 27%;
 }
 .topbnt_right li {
-  background: url(./img/bnt.png) center;
+  background: url("./img/bnt.png") center;
   font-size: 14px;
   line-height: 33px;
   background-repeat: no-repeat;
@@ -1131,7 +1125,7 @@ html,
 /* .box_pad{ margin: 3px 20px; } */
 
 .mrboxtm-map {
-  background: url(./img/mapbg.png);
+  background: url("./img/mapbg.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1142,7 +1136,7 @@ html,
   position: relative;
 }
 .hdmrboxtm-map {
-  background: url(./img/hdmap.png);
+  background: url("./img/hdmap.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1164,10 +1158,10 @@ html,
   position: absolute;
 }
 .mrboxtm-map li.bluer {
-  background-image: url(./img/blue_rico.png);
+  background-image: url("./img/blue_rico.png");
 }
 .mrboxtm-map li.redr {
-  background-image: url(./img/red_rico.png);
+  background-image: url("./img/red_rico.png");
 }
 .ricontop {
   width: 29px;
@@ -1184,10 +1178,10 @@ html,
   display: inline-block;
 }
 i.bluer {
-  background-image: url(./img/ricon2.png);
+  background-image: url("./img/ricon2.png");
 }
 i.redr {
-  background-image: url(./img/ricon1.png);
+  background-image: url("./img/ricon1.png");
 }
 .font14 p.fl,
 .font14 p.fr {
@@ -1284,7 +1278,7 @@ i.redr {
 
 /*  警情警力分析 完*/
 .aleftboxttop {
-  background: url(./img/leftb1.png);
+  background: url("./img/leftb1.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1302,7 +1296,7 @@ i.redr {
 }
 
 .aleftboxtmidd {
-  background: url(./img/aleftboxtmidd.png);
+  background: url("./img/aleftboxtmidd.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1316,7 +1310,7 @@ i.redr {
   margin-top: 1%;
 }
 .aleftboxtbott {
-  background: url(./img/aleftboxtbott.png);
+  background: url("./img/aleftboxtbott.png");
   background-size: 100% 60%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1343,7 +1337,7 @@ i.redr {
 }
 .amiddboxttop {
   overflow: hidden;
-  background: url(./img/amiddboxttop.png);
+  background: url("./img/amiddboxttop.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1351,7 +1345,7 @@ i.redr {
   height: 52.1%;
 }
 .amiddboxttop_map {
-  /* background: url( ./img/img.png); */
+  /* background: url("./img/img.png"); */
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1372,7 +1366,7 @@ i.redr {
   padding-top: 0.8%;
 }
 .amiddboxttop_map span {
-  background: url(./img/camera.png);
+  background: url("./img/camera.png");
   background-repeat: no-repeat;
   background-position: 0 0;
   width: 24px;
@@ -1381,7 +1375,7 @@ i.redr {
   position: absolute;
 }
 .amiddboxttop_map span.camera_l {
-  background: url(./img/camera_l.png);
+  background: url("./img/camera_l.png");
   background-repeat: no-repeat;
   background-position: 0 0;
   width: 24px;
@@ -1391,7 +1385,7 @@ i.redr {
 }
 
 .amiddboxtbott1 {
-  background: url(./img/amiddboxtbott1.png);
+  background: url("./img/amiddboxtbott1.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1413,7 +1407,7 @@ i.redr {
   margin-top: 0.6%;
 }
 /* .amiddboxtbott2 {
-  background: url( ./img/amiddboxtbott2.png);
+  background: url("./img/amiddboxtbott2.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1429,7 +1423,7 @@ i.redr {
   margin-top: 1.6%;
 }
 .arightboxtop {
-  background: url(./img/arightboxtop.png);
+  background: url("./img/arightboxtop.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1437,7 +1431,7 @@ i.redr {
   height: 51.9%;
 }
 .arightboxbott {
-  background: url(./img/arightboxbott.png);
+  background: url("./img/arightboxbott.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1458,7 +1452,7 @@ i.redr {
   height: 85.5%;
 }
 .plefttoday {
-  background: url(./img/pleft1middt.png);
+  background: url("./img/pleft1middt.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1471,7 +1465,7 @@ i.redr {
   padding: 4% 0;
 }
 .lpeftmidbot {
-  background: url(./img/pleft1middb.png);
+  background: url("./img/pleft1middb.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1486,7 +1480,7 @@ i.redr {
   height: 82%;
 }
 .lpeftbot {
-  background: url(./img/pleft1middb.png);
+  background: url("./img/pleft1middb.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1501,7 +1495,7 @@ i.redr {
   height: 82%;
 }
 .pleftbox2top {
-  background: url(./img/pleftbox2top.png);
+  background: url("./img/pleftbox2top.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1516,7 +1510,7 @@ i.redr {
   height: 88%;
 }
 .pleftbox2midd {
-  background: url(./img/pleftbox2mid.png);
+  background: url("./img/pleftbox2mid.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1532,7 +1526,7 @@ i.redr {
   overflow: hidden;
 }
 .lpeft2bot {
-  background: url(./img/pleft1middb.png);
+  background: url("./img/pleft1middb.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1545,7 +1539,7 @@ i.redr {
   height: 100%;
 }
 .hdrightboxtop {
-  background: url(./img/hdbjr.png);
+  background: url("./img/hdbjr.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1560,7 +1554,7 @@ i.redr {
   height: 82%;
 }
 .pmrboxbottom {
-  background: url(./img/pmiddboxmidd.png);
+  background: url("./img/pmiddboxmidd.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1581,7 +1575,7 @@ i.redr {
   margin-top: 1.8%;
 }
 .pmrtop {
-  background: url(./img/prighttop.png);
+  background: url("./img/prighttop.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1595,7 +1589,7 @@ i.redr {
 }
 
 .pmrtop1 {
-  background: url(./img/prighttop.png);
+  background: url("./img/prighttop.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1632,7 +1626,7 @@ i.redr {
 }
 
 .pulefttop {
-  background: url(./img/pulefttop.png);
+  background: url("./img/pulefttop.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1640,7 +1634,7 @@ i.redr {
   height: 29%;
 }
 .puleftboxtmidd {
-  background: url(./img/puleftmidd.png);
+  background: url("./img/puleftmidd.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1649,7 +1643,7 @@ i.redr {
   margin-top: 1%;
 }
 .puleftboxtbott {
-  background: url(./img/puleftbott.png);
+  background: url("./img/puleftbott.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1659,7 +1653,7 @@ i.redr {
 }
 
 .pumiddboxttop1 {
-  background: url(./img/pumiddtop1.png);
+  background: url("./img/pumiddtop1.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1668,7 +1662,7 @@ i.redr {
   padding-left: 1.4%;
 }
 .pumiddboxttop2 {
-  background: url(./img/pumiddtop2.png);
+  background: url("./img/pumiddtop2.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1677,7 +1671,7 @@ i.redr {
   margin-left: 1.4%;
 }
 .pmiddboxtbott {
-  background: url(./img/pumiddbott.png);
+  background: url("./img/pumiddbott.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1686,7 +1680,7 @@ i.redr {
   margin-top: 2%;
 }
 .purightboxtop {
-  background: url(./img/purighttop.png);
+  background: url("./img/purighttop.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1694,7 +1688,7 @@ i.redr {
   height: 29%;
 }
 .purightboxmidd {
-  background: url(./img/purightmidd.png);
+  background: url("./img/purightmidd.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1703,7 +1697,7 @@ i.redr {
   margin-top: 1.8%;
 }
 .purightboxbott {
-  background: url(./img/purightbott.png);
+  background: url("./img/purightbott.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
@@ -1826,7 +1820,7 @@ i.redr {
   height: 100%;
 }
 .pumiddboxttop2_cont li {
-  background: rgba(1, 202, 217, 0.2) url(./img/hot.png) no-repeat 12px 12px;
+  background: rgba(1, 202, 217, 0.2) url("./img/hot.png") no-repeat 12px 12px;
   height: 13.8%;
 }
 .pumiddboxttop2_cont li p.text_l {
@@ -1841,7 +1835,7 @@ i.redr {
   height: 40%;
 }
 .pumiddboxttop2_cont li.bg {
-  background: rgba(0, 255, 255, 0.4) url(./img/hot.png) no-repeat 12px 12px;
+  background: rgba(0, 255, 255, 0.4) url("./img/hot.png") no-repeat 12px 12px;
 }
 .pvr {
   position: relative;
