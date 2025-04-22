@@ -748,7 +748,7 @@ html,
   background: rgba(0, 183, 238, 0.6);
   color: #fff;
 }
-*/ .lefttoday {
+.lefttoday {
   background: url("./img/left1box.png");
   background-repeat: no-repeat;
   background-position: -3px 2px;
