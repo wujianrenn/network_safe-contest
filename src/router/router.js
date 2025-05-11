@@ -61,7 +61,7 @@ const layoutMap = [
   {
     path: "account/user",
     name: "User",
-    hidden: true /* 不在侧边导航展示 */,
+    hidden: true,
     meta: { title: "个人中心" },
     component: () => import("../views/admin/User.vue"),
   },
@@ -90,7 +90,7 @@ const layoutMap = [
   {
     path: "account/upload",
     name: "NewsUpload",
-    hidden: true /* 不在侧边导航展示 */,
+    hidden: true,
     meta: { title: "舆情上传" },
     component: () => import("../views/detective/upload/Upload.vue"),
   },
@@ -98,7 +98,7 @@ const layoutMap = [
   {
     path: "account/record",
     name: "Record",
-    hidden: true /* 不在侧边导航展示 */,
+    hidden: true,
     meta: { title: "舆情记录" },
     component: () => import("../views/detective/record/Record.vue"),
   },
@@ -107,8 +107,8 @@ const layoutMap = [
     path: "account/detail",
     name: "Deatail",
     meta: { title: "舆情详情" },
-    hidden: true /* 不在侧边导航展示 */,
-    props: true, // 这会将查询参数作为组件的 props 传递
+    hidden: true,
+    props: true, 
     component: () => import("../views/detective/Detail.vue"),
   },
 
@@ -116,13 +116,13 @@ const layoutMap = [
     path: "account/news/lastest1",
     name: "Lastest1",
     meta: { title: "1" },
-    hidden: true /* 不在侧边导航展示 */,
+    hidden: true/,
     component: () => import("../views/detective/lastest/lastest1/Index.vue"),
   },
   {
     path: "account/news/lastest2",
     name: "Lastest2",
-    hidden: true /* 不在侧边导航展示 */,
+    hidden: true,
     meta: { title: "2" },
 
     component: () => import("../views/detective/lastest/lastest2/Index.vue"),
@@ -131,7 +131,7 @@ const layoutMap = [
     path: "account/news/lastest3",
     name: "Lastest3",
     meta: { title: "3" },
-    hidden: true /* 不在侧边导航展示 */,
+    hidden: true,
     component: () => import("../views/detective/lastest/lastest3/Index.vue"),
   },
   {

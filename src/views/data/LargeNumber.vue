@@ -42,8 +42,10 @@
             <el-table
               :data="tableData"
               height="340"
-              style="width: 100%; background-color: transparent"
+              style="width: 100%;"
               :header-cell-style="headerCellStyle"
+              :row-class-name="tableRowClassName"
+              :cell-style="cellStyle"
               class="my_table"
             >
               <el-table-column prop="time" label="时间" width="180" />
@@ -542,16 +544,34 @@ export default {
   },
 
   setup() {
-    const headerCellStyle = ({ column, $index }) => {
-      // 返回一个样式对象，覆盖表格头部的样式
+    const headerCellStyle = {
+      background: "rgba(1, 202, 217, 0.3)",
+      color: "#000000",  // 修改为黑色字体以提高对比度
+      fontWeight: "600",
+      fontSize: "16px",
+      textAlign: "center",
+      borderBottom: "2px solid rgba(1, 202, 217, 0.5)"
+    };
+    
+    // 单元格样式
+    const cellStyle = () => {
       return {
-        backgroundColor: "transparent", // 设置背景色为透明，即去掉白色背景
-        /* 可以设置其他样式，如颜色、边框等 */
+        color: '#000000',  // 修改为黑色字体以提高对比度
+        fontSize: '14px',
+        padding: '12px 8px'
       };
+    };
+    
+    // 表格行样式类名方法
+    const tableRowClassName = ({ rowIndex }) => {
+      // 偶数行和奇数行使用不同的样式类
+      return rowIndex % 2 === 0 ? 'even-row' : 'odd-row';
     };
 
     return {
       headerCellStyle,
+      tableRowClassName,
+      cellStyle
     };
   },
   components: { ChinaMap },
@@ -576,13 +596,66 @@ export default {
   font-size: 16px;
 }
 
+/* 表格样式优化 */
+.my_table {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(1, 202, 217, 0.4);
+  background-color: rgb(0, 10, 82) !important;
+}
 
-el-table th,
+.my_table .el-table__inner-wrapper::before,
+.my_table .el-table__border-left-patch {
+  display: none;
+}
+
+.my_table .el-table__body tr.even-row td {
+  background-color: rgba(1, 102, 217, 0.15);
+  border-bottom: 1px solid rgba(1, 202, 217, 0.3);
+}
+
+.my_table .el-table__body tr.odd-row td {
+  background-color: rgba(1, 102, 217, 0.25);
+  border-bottom: 1px solid rgba(1, 202, 217, 0.3);
+}
+
+.my_table .el-table__body tr:hover td {
+  background-color: rgba(0, 183, 238, 0.4) !important;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: #FFFFFF !important;
+  font-weight: 600;
+}
+
+.my_table .el-table__header-wrapper th {
+  background-color: rgba(1, 202, 217, 0.3) !important;
+  border-bottom: 2px solid rgba(1, 202, 217, 0.5);
+}
+
+.my_table .el-table__header-wrapper th.is-leaf {
+  border-bottom: none;
+}
+
+.el-table,
+.el-table__expanded-cell {
+  background-color: transparent !important;
+}
+
+.el-table th,
 .el-table tr,
-el-table-column,
-tr:hover ,
-.el-table__body{
-  background-color: transparent;
+.el-table__body,
+.el-table__footer,
+.el-table__header {
+  background-color: transparent !important;
+  color: #FFFFFF;
+}
+
+.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell {
+  background-color: rgba(0, 183, 238, 0.4) !important;
+}
+
+.el-table__body tr.current-row>td.el-table__cell {
+  background-color: rgba(0, 183, 238, 0.5) !important;
 }
 
 .wpbox {
@@ -1169,7 +1242,7 @@ html,
   line-height: 30px;
   color: #fff;
   text-align: center;
-  bbackground-size: 100% 100%;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: top center;
   font-size: 12px;
