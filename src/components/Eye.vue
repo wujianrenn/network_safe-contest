@@ -331,9 +331,32 @@ export default {
     },
 
     start() {
-      console.log(this.textarea);
+      // 检查文本是否为空
+      if (!this.textarea || !this.textarea.trim()) {
+        ElMessage.warning('请输入需要检测的舆情内容');
+        return;
+      }
+
+      // 显示加载提示
+      const loadingInstance = ElMessageBox.alert("", "正在检测中，请稍候...", {
+        confirmButtonText: "OK",
+        showConfirmButton: false,
+        closeOnClickModal: false,
+        closeOnPressEscape: false,
+      });
+
+      console.log('检测内容:', this.textarea);
       const token = sessionStorage.getItem("token");
-      axios.defaults.headers.common["token"] = ` ${token}`;
+      
+      // 检查token是否存在
+      if (!token) {
+        ElMessageBox.close();
+        ElMessage.warning('请先登录');
+        return;
+      }
+      
+      axios.defaults.headers.common["token"] = `${token}`;
+      
       axios
         .post(
           'http://124.223.59.64:8083/checkNews',
@@ -343,36 +366,52 @@ export default {
           }}
         )
         .then((response) => {
-          console.log(111,response);
-          ElMessageBox.alert("此舆情为真", `${response.data.check_status}`, {
-            confirmButtonText: "OK",
-          });
-          this.$router.push({
-            path: "/account/detail",
-            query: {
-              status: response.data.check_status,
-              title: this.textarea,
-              header: response.headers.content - length,
-              type: response.request.statusText,
-              content: response.data.raw_response,
-            },
-            params: {},
-          });
+          // 关闭加载提示
+          ElMessageBox.close();
+          
+          console.log('检测结果:', response);
+          
+          // 显示结果提示
+          ElMessageBox.alert(
+            response.data.raw_response || "检测完成", 
+            `${response.data.check_status || "舆情检测结果"}`, 
+            {
+              confirmButtonText: "查看详情",
+              callback: () => {
+                // 正确获取content-length头部
+                const contentLength = response.headers['content-length'] || '';
+                
+                // 跳转到详情页面
+                this.$router.push({
+                  path: "/account/detail",
+                  query: {
+                    status: response.data.check_status || '',
+                    title: this.textarea || '',
+                    header: contentLength,
+                    type: response.request.statusText || '',
+                    content: response.data.raw_response || '',
+                  }
+                });
+              }
+            }
+          );
         })
         .catch((error) => {
-          console.error(1, error);
+          // 关闭加载提示
+          ElMessageBox.close();
+          
+          console.error('检测失败:', error);
+          
+          // 显示错误提示
+          ElMessageBox.alert(
+            error.message || "网络错误，请稍后再试", 
+            "检测失败", 
+            {
+              confirmButtonText: "确定",
+              type: "error"
+            }
+          );
         });
-
-      ElMessageBox.alert("", "提交成功", {
-        confirmButtonText: "OK",
-        callback: () => {
-          ElMessage({
-            type: "success",
-            message: `提交成功`,
-          });
-
-        },
-      });
     },
   },
 };

@@ -7,7 +7,7 @@
     </template>
     <br />
     <div class="centainer">
-      <el-card class="box-card">
+      <el-card class="box-card" v-loading="!itemTitle && !itemContent">
         <template #header>
           <div class="card-header">
             <span style="font-size: 24px">{{ itemTitle }}</span>
@@ -78,35 +78,35 @@
 
 <script setup>
 import { ref, onMounted, toRaw, reactive } from "vue";
-import { ChatDotRound, UserFilled, Plus } from "@element-plus/icons";
-import { createRouter, createWebHistory } from 'vue-router';
+import { ChatDotRound, UserFilled, Plus } from "@element-plus/icons-vue";
 import axios from "axios";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
+import { ElMessage } from "element-plus";
 
 const components = {
   UserFilled,
   ChatDotRound,
 };
 const router = useRouter();
+const route = useRoute();
 const buttons = [{ type: "primary", text: "AI甄别" }];
 
-let geturl = window.location.href;
+// 安全地获取URL参数，提供默认值防止undefined错误
+const itemContent = ref(route.query.content || '');
+const itemTitle = ref(route.query.title || '');
+const itemTime = ref(route.query.header || '');
+const itemName = ref(route.query.type || '');
+const itemId = ref(route.query.status || '');
 
-let getqyinfo = geturl.split("?")[1];
-let getqys = getqyinfo.split("&");
-let itemContent = decodeURI(getqys[0].split("=")[1]);
-let itemTitle = decodeURI(getqys[1].split("=")[1]);
-let itemTime = getqys[2].split("=")[1];
-let itemName = decodeURI(getqys[3].split("=")[1]);
-
-if(getqys[4])
- { 
-   var itemId=getqys[4].split("=")[1];
-  //  return itemId;
-}
-if (getqys[5]) {
-  let itemIds = decodeURI(getqys[5].split("=")[1]);
-}
+// 记录URL参数获取情况，便于调试
+const urlParams = {
+  content: route.query.content,
+  title: route.query.title,
+  header: route.query.header,
+  type: route.query.type,
+  status: route.query.status
+};
+console.log('获取的URL参数:', urlParams);
 
 // let itemId = decodeURI(getqys[4].split("=")[1]);
 
@@ -116,70 +116,124 @@ const listData = ref([]);
 const input = ref("");
 
 const answer = () => {
-  router.push({
-    path: "/account/answer",
-    query: {
-      itemContent: itemContent,
-      itemName: itemName,
-      itemId: decodeURI(itemId),
-      itemTitle: itemTitle,
-      itemTime: itemTime,
-
-    },
-    params: {},
-  });
+  try {
+    router.push({
+      path: "/account/answer",
+      query: {
+        itemContent: itemContent.value,
+        itemName: itemName.value,
+        itemId: itemId.value,
+        itemTitle: itemTitle.value,
+        itemTime: itemTime.value,
+      },
+    });
+  } catch (error) {
+    console.error('导航错误:', error);
+    ElMessage.error('页面跳转失败，请稍后再试');
+  }
 };
 
 const addComment = () => {
-  const comments = input.value; // 获取输入框的值
-  console.log("Added comment:", comments);
-  const commend = reactive({
-    commented: comments,
-    opinionId: itemId,
-    userId: "414",
-  });
-  const url = "http://124.223.59.64:80/comment/add";
-  console.log(url);
-  axios.defaults.headers.common["Content-Type"] = "application/json";
-  const token = sessionStorage.getItem("token");
-  axios.defaults.headers.common["token"] = ` ${token}`;
-  axios
-    .post(url, commend, token)
-    .then((response) => {
-      console.log(response);
-      if (response.data.code != 1) {
-        alert("网络出现问题，请重试!");
-        return;
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+  try {
+    // 检查评论内容是否为空
+    if (!input.value.trim()) {
+      ElMessage.warning('评论内容不能为空');
+      return;
+    }
+    
+    // 检查必要参数
+    if (!itemId.value) {
+      ElMessage.warning('无法添加评论，参数不完整');
+      return;
+    }
+    
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      ElMessage.warning('请先登录后再评论');
+      return;
+    }
+    
+    const comments = input.value; // 获取输入框的值
+    console.log("添加评论:", comments);
+    
+    const commend = {
+      commented: comments,
+      opinionId: itemId.value,
+      userId: "414", // 建议从用户状态或会话中获取
+    };
+    
+    const url = "http://124.223.59.64:80/comment/add";
+    axios.defaults.headers.common["Content-Type"] = "application/json";
+    axios.defaults.headers.common["token"] = `${token}`;
+    
+    axios.post(url, commend)
+      .then((response) => {
+        console.log('评论响应:', response);
+        if (response.data.code === 1) {
+          ElMessage.success('评论成功');
+          input.value = ''; // 清空输入框
+          handleButtonClick(); // 刷新评论列表
+        } else {
+          ElMessage.error(response.data.msg || "评论失败，请重试!");
+        }
+      })
+      .catch((error) => {
+        console.error('评论请求失败:', error);
+        ElMessage.error('评论失败，请稍后再试');
+      });
+  } catch (error) {
+    console.error('添加评论时发生错误:', error);
+    ElMessage.error('系统错误，请稍后再试');
+  }
 };
 
 const handleButtonClick = async () => {
-  const token = sessionStorage.getItem("token");
-  axios.defaults.headers.common["token"] = ` ${token}`;
-  const url = "http://124.223.59.64:80/comment/list/" + itemId;
-  // const url = "http://124.223.59.64:80/comment/list";
   try {
-    const response = await axios.get(url);
-    console.log(response, 2);
-    response.data.data.forEach((dataItem) => {
-      listData.value.push({
-        commented: dataItem.commented,
-        time: dataItem.updateTime,
-        id: dataItem.userId,
-      });
-    });
-    console.log(toRaw(listData.value), "111");
-    if (response.data.code !== 1) {
-      alert("网络出现问题，请重试!");
+    // 清空之前的数据，避免重复加载
+    listData.value = [];
+    
+    // 检查itemId是否存在
+    if (!itemId.value) {
+      console.warn('评论列表获取失败: itemId不存在');
+      ElMessage.warning('无法加载评论，参数不完整');
       return;
     }
+    
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      console.warn('评论列表获取失败: token不存在');
+      ElMessage.warning('请先登录');
+      return;
+    }
+    
+    axios.defaults.headers.common["token"] = `${token}`;
+    const url = `http://124.223.59.64:80/comment/list/${itemId.value}`;
+    
+    const response = await axios.get(url);
+    console.log('评论列表响应:', response);
+    
+    if (response.data.code !== 1) {
+      ElMessage.error(response.data.msg || "网络出现问题，请重试!");
+      return;
+    }
+    
+    if (Array.isArray(response.data.data)) {
+      response.data.data.forEach((dataItem) => {
+        listData.value.push({
+          commented: dataItem.commented,
+          time: dataItem.updateTime,
+          id: dataItem.userId,
+        });
+      });
+      console.log('处理后的评论列表:', toRaw(listData.value));
+    } else {
+      console.warn('评论数据格式不正确:', response.data);
+    }
   } catch (error) {
-    console.error(error);
+    console.error('获取评论列表失败:', error);
+    ElMessage.error('获取评论失败，请稍后再试');
   }
+}
 };
 
 onMounted(() => {

@@ -6,8 +6,20 @@
             <span>用户注册</span>
           </div>
         </template>
-        <el-form :model="loginFormState" :rules="rules" ref="loginFormRef">
-          <el-form-item prop="account">
+        <el-form :model="loginFormState" :rules="rules" ref="loginFormRef" label-position="top">
+          <el-form-item prop="username" label="用户名">
+            <el-input
+              v-model.trim="loginFormState.username"
+              maxlength="32"
+              placeholder="请输入用户名"
+              clearable
+            >
+              <template #prefix>
+                <icons account="User"></icons>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="account" label="账号">
             <el-input
               v-model.trim="loginFormState.account"
               maxlength="32"
@@ -19,66 +31,32 @@
               </template>
             </el-input>
           </el-form-item>
-          <el-form-item prop="password">
+          <el-form-item prop="password" label="密码">
             <el-input
               v-model.trim="loginFormState.password"
               maxlength="16"
               show-password
               placeholder="请输入密码"
               clearable
-              @keyup.enter.exact="handleLogin"
             >
               <template #prefix>
                 <icons account="Lock"></icons>
               </template>
             </el-input>
           </el-form-item>
-
-          <!-- <el-form-item prop="phone">
+          <el-form-item prop="confirmPassword" label="确认密码">
             <el-input
-              v-model.trim="loginFormState.phone"
+              v-model.trim="loginFormState.confirmPassword"
               maxlength="16"
-              show-phone
-              placeholder="请输入电话号码"
+              show-password
+              placeholder="请再次输入密码"
               clearable
-              @keyup.enter.exact="handleLogin"
             >
               <template #prefix>
                 <icons account="Lock"></icons>
               </template>
             </el-input>
           </el-form-item>
-
-          <el-form-item prop="email">
-            <el-input
-              v-model.trim="loginFormState.email"
-              maxlength="16"
-              show-email
-              placeholder="请输入邮箱"
-              clearable
-              @keyup.enter.exact="handleLogin"
-            >
-              <template #prefix>
-                <icons account="Lock"></icons>
-              </template>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item prop="address">
-            <el-input
-              v-model.trim="loginFormState.address"
-              maxlength="16"
-              show-address
-              placeholder="请输入地址"
-              clearable
-              @keyup.enter.exact="handleLogin"
-            >
-              <template #prefix>
-                <icons account="Lock"></icons>
-              </template>
-            </el-input>
-          </el-form-item> -->
-          
           <el-form-item>
             <el-button
               type="primary"
@@ -112,114 +90,105 @@
   
       //把需要进行确认的信息装入一个对象里
       const loginFormState = reactive({
+        username: "",
         account: "",
         password: "",
+        confirmPassword: "",
         admin: "0",
+        register: false,
       });
   
+      // 密码校验规则
+      const validatePassword = (rule, value, callback) => {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,16}$/;
+        if (!passwordRegex.test(value)) {
+          callback(new Error('密码必须包含大小写字母和数字，长度8-16位'));
+        } else {
+          // 如果确认密码已输入，则同时校验确认密码
+          if (loginFormState.confirmPassword !== '') {
+            loginFormRef.value.validateField('confirmPassword');
+          }
+          callback();
+        }
+      };
+
+      // 确认密码校验规则
+      const validateConfirmPassword = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== loginFormState.password) {
+          callback(new Error('两次输入密码不一致'));
+        } else {
+          callback();
+        }
+      };
+
       const rules = {
-        account: [{ required: true, message: "账号不能为空", trigger: "blur" }],
+        username: [
+          { required: true, message: "用户名不能为空", trigger: "blur" },
+          { min: 2, max: 20, message: "用户名长度为2-20位", trigger: "blur" }
+        ],
+        account: [
+          { required: true, message: "账号不能为空", trigger: "blur" },
+          { pattern: /^[a-zA-Z0-9_]{5,20}$/, message: "账号只能包含字母、数字和下划线，长度5-20位", trigger: "blur" }
+        ],
         password: [
           { required: true, message: "密码不能为空", trigger: "blur" },
-          { min: 5, max: 16, message: "密码长度为5-16位", trigger: "blur" },
+          { validator: validatePassword, trigger: "blur" }
         ],
+        confirmPassword: [
+          { required: true, message: "请再次输入密码", trigger: "blur" },
+          { validator: validateConfirmPassword, trigger: "blur" }
+        ]
       };
   
       const open4 = () => {
         ElMessage.error("非法登录");
       };
   
-      const handleLogin = () => {
-        console.log("1");
+      const handleRegister = () => {
         loginFormRef.value.validate((valid) => {
           if (!valid) {
+            ElMessage.warning("请正确填写所有必填项");
             return false;
           }
+          
+          // 显示加载状态
+          loginFormState.register = true;
+          
+          // 构建注册参数
           let params = {
+            username: loginFormState.username,
             account: loginFormState.account,
-                password: loginFormState.password,
-                phone: loginFormState.phone,
-                email: loginFormState.email,
-                address:loginFormState.address,
+            password: loginFormState.password,
           };
-  
-          setTimeout(() => {
-            let users = {
-              role: loginFormState.admin === "1" ? "admin" : "user",
-              useraccount: loginFormState.account,
-            };
-            Object.assign(params, users);
-            sessionStorage.setItem("jwt", encode(JSON.stringify(params)));
-            store.dispatch("setUser", params);
-            loginFormState.loading = false;
-  
-            const url = "http://124.223.59.64:80/user/login";
-            axios
-              .post(url, loginFormState)
-              .then((response) => {
-                console.log(response.data);
-                if (response.data.code === 1) {
-                  sessionStorage.setItem("token", response.data.data.token);
-                  console.log(response.data.data.token);
-                  console.log("登录成功");
-                } else {
-                  console.log("登录失败");
-                  alert("登录失败");
-                  open4();
-                  router.replace("/login");
-                }
-              })
-              .catch((error) => {
-                console.error(error);
-              });
-  
-            if (loginFormState.account === "admin") {
-              router.replace("contor/show");
-            } else {
-              router.replace("/account");
-            }
-          }, 1000);
+          
+          // 发送注册请求
+          const url = "http://124.223.59.64:80/user/register";
+          axios.post(url, params)
+            .then((response) => {
+              if (response.data.code === 1) {
+                ElMessage.success("注册成功，请登录");
+                setTimeout(() => {
+                  router.push('/login');
+                }, 1500);
+              } else {
+                ElMessage.error(response.data.msg || "注册失败，请稍后重试");
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+              ElMessage.error("注册失败，请检查网络连接");
+            })
+            .finally(() => {
+              loginFormState.register = false;
+            });
         });
-      };
-  
-      const confirmClick = () => {
-        console.log("2");
-        const ul = "http://124.223.59.64:80/common/getPublic";
-  
-        const token = sessionStorage.getItem("token");
-        const type = 1;
-        axios.defaults.headers.common["token"] = ` ${token}`;
-  
-        axios
-          .get(ul, token)
-          .then((response) => {
-            console.log(response.data);
-            if (response.data.code === 1) {
-              sessionStorage.setItem("publicKey", response.data.data);
-              console.log(sessionStorage.getItem("publicKey"));
-              console.log("加密成功");
-              // console.log(response.data.data.token)
-            } else {
-              console.log("加密失败");
-            }
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      };
-  
-      const handleRegister = () => {
-        console.log("happy!");
-        let params = {
-          account: loginFormState.account,
-          password: loginFormState.password,
-        };
       };
       return {
         loginFormRef,
         loginFormState,
         rules,
-        handleLogin,
         handleRegister,
         open4,
       };
@@ -237,15 +206,46 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    
     .login_center {
-      width: 396px;
+      width: 450px;
       height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      
+      :deep(.el-form-item__label) {
+        font-weight: 500;
+        padding-bottom: 4px;
+      }
+      
+      :deep(.el-input__wrapper) {
+        border-radius: 4px;
+        transition: all 0.3s;
+        
+        &:hover {
+          box-shadow: 0 0 0 1px var(--el-color-primary) inset;
+        }
+      }
+      
+      :deep(.el-button) {
+        height: 44px;
+        font-size: 16px;
+        border-radius: 4px;
+        transition: all 0.3s;
+        
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(64, 158, 255, 0.4);
+        }
+      }
     }
   
     .card_header {
-      font-size: 18px;
+      font-size: 22px;
+      font-weight: bold;
       text-align: center;
+      padding: 8px 0;
+      color: var(--el-color-primary);
     }
   }
   </style>
-  

@@ -116,7 +116,7 @@ const layoutMap = [
     path: "account/news/lastest1",
     name: "Lastest1",
     meta: { title: "1" },
-    hidden: true/,
+    hidden: true,
     component: () => import("../views/detective/lastest/lastest1/Index.vue"),
   },
   {
