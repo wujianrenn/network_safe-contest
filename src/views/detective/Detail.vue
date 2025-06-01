@@ -7,6 +7,8 @@
     </template>
     <br />
     <div class="centainer">
+      <!-- 添加舆情热点列表组件 -->
+      <hot-topic-list class="hot-topic-section" />
       <el-card class="box-card" v-loading="!itemTitle && !itemContent">
         <template #header>
           <div class="card-header">
@@ -79,6 +81,7 @@
 <script setup>
 import { ref, onMounted, toRaw, reactive } from "vue";
 import { ChatDotRound, UserFilled, Plus } from "@element-plus/icons-vue";
+import HotTopicList from "../../components/HotTopicList.vue";
 import axios from "axios";
 import { useRouter, useRoute } from "vue-router";
 import { ElMessage } from "element-plus";
@@ -233,7 +236,6 @@ const handleButtonClick = async () => {
     console.error('获取评论列表失败:', error);
     ElMessage.error('获取评论失败，请稍后再试');
   }
-}
 };
 
 onMounted(() => {
@@ -320,5 +322,10 @@ onMounted(() => {
 }
 .distance_left {
   margin-left: 50px;
+}
+
+.hot-topic-section {
+  margin-bottom: 30px;
+  width: 100%;
 }
 </style>

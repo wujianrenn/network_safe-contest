@@ -4,8 +4,7 @@ import ElementPlus from "element-plus";
 import * as ELIcons from '@element-plus/icons-vue'
 import "element-plus/dist/index.css";
 // axios.defaults.baseURL = '/apii' 
-// 自定义icon组件
-import Icons from "@/components/Icons.vue";
+// 使用Element Plus内置图标
 
 import App from "./App.vue";
 import router from "./router";
@@ -27,7 +26,27 @@ app.config.globalProperties.$oss = oss;
 
 // 全部加载
 app.use(ElementPlus);
-// 引入自定义Icons
-app.component("Icons", Icons);
+// 注册Element Plus图标
+for (const [key, component] of Object.entries(ELIcons)) {
+  app.component(key, component);
+}
 
-app.use(router).use(store).mount("#app");
+// 添加全局错误处理
+app.config.errorHandler = (err, vm, info) => {
+  console.error('Vue错误:', err);
+  console.error('错误信息:', info);
+};
+
+// 添加全局警告处理
+app.config.warnHandler = (msg, vm, trace) => {
+  console.warn('Vue警告:', msg);
+  console.warn('警告追踪:', trace);
+};
+
+// 挂载应用
+try {
+  app.use(router).use(store).mount("#app");
+  console.log('应用已成功挂载');
+} catch (error) {
+  console.error('应用挂载失败:', error);
+}

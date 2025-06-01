@@ -1,423 +1,205 @@
 <template>
-  <!-- <el-drawer v-model="drawer2" direction="rtl" :with-header="false">
-    <div v-for="item in listData" :key="item.no" class="text-item">
-      <el-card style="margin-top: 10px">
-        <el-checkbox v-model="checked" :label="item.title" size="large" />
-      </el-card>
-    </div>
-
-    <template #footer>
-      <div style="flex: auto">
-        <el-button type="primary" @click="confirmClick"
-          >提交<Download
-        /></el-button>
-      </div>
-    </template>
-  </el-drawer> -->
-
-  <!-- <input type="file" ref="fileInput" @click="uploadImage" /> -->
-  <input type="file" ref="fileInput" @change="handleFileChange" />
-  <button @click="uploadImage">上传</button>
-
-  <el-drawer v-model="drawer1" direction="rtl" :with-header="false">
-    <!-- 添加上传图片 -->
-    <el-upload
-      name="file"
-      enctype="multipart/form-data"
-      action="http://124.223.59.64:80/common/analys"
-      list-type="picture-card"
-      :auto-upload="false"
-      :on-success="handleAvatarSuccess"
-      :before-upload="onBeforeUpload"
-      ref="upload"
-    >
-      <el-icon><Plus /></el-icon>
-
-      <template #file="{ file }">
-        <div>
-          <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
-          <span class="el-upload-list__item-actions">
-            <span
-              class="el-upload-list__item-preview"
-              @click="handlePictureCardPreview(file)"
-            >
-              <el-icon><zoom-in /></el-icon>
-            </span>
-            <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="handleDownload(file)"
-            >
-              <el-icon><Download /></el-icon>
-            </span>
-            <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="handleRemove(file)"
-            >
-              <el-icon><Delete /></el-icon>
-            </span>
-          </span>
-        </div>
-      </template>
-    </el-upload>
-
-    <el-dialog v-model="dialogVisible">
-      <img w-full :src="dialogImageUrl" alt="Preview Image" />
-    </el-dialog>
-    <!--  -->
-
-    <template #footer>
-      <div style="flex: auto">
-        <el-button type="primary" @click="confirmClickPicture()"
-          >提交</el-button
-        >
-      </div>
-    </template>
-  </el-drawer>
   <div class="container">
     <div class="middle">
       <h2 class="title">一辨真假</h2>
-      <div style="width: 260px; position: fixed; top: 87px; right: -5px">
-        <el-button type="primary" class="select-btn" @click="drawer1 = true">
-          选择照片
+      
+      <!-- 操作按钮组 -->
+      <div class="action-buttons">
+        <el-button 
+          type="primary" 
+          @click="startAnalysis" 
+          :loading="isAnalyzing"
+          :disabled="!textarea || !textarea.trim()"
+        >
+          {{ isAnalyzing ? '分析中...' : '开始分析' }}
         </el-button>
-        <!-- <el-button type="primary" class="select-btn" @click="drawer2 = true">
-          选择文字
-        </el-button> -->
+        <el-button 
+          :type="showIframe ? 'danger' : 'primary'"
+          @click="toggleIframe"
+        >
+          {{ showIframe ? '关闭分析面板' : '打开分析面板' }}
+        </el-button>
       </div>
-      <div style="width: 100%; height: 50%">
-        <!-- <el-card class="box-card">
-          <el-row v-if="showList.length" :gutter="12">
-            <el-col
-              style="padding-bottom: 10px"
-              :span="8"
-              v-for="item in showList"
-              :key="item.id"
-            >
-              <el-card shadow="always"> {{ item.value }} </el-card>
-            </el-col>
-          </el-row>
-          <el-empty v-else :image-size="100" />
-        </el-card> -->
+      
+      <!-- 内容输入区 -->
+      <div class="content-area">
         <el-input
           v-model="textarea"
-          :rows="5"
+          :rows="8"
           type="textarea"
-          placeholder="&nbsp;&nbsp;请输入您的问题"
+          placeholder="请输入您要分析的内容"
           class="question"
         />
       </div>
-
-      <div style="width: 100%">
-        <el-button text @click="start" class="begin" type="primary"
-          >&nbsp;&nbsp;开始&nbsp;&nbsp;</el-button
-        >
+      
+      <!-- 本地开发服务器iframe -->
+      <div v-if="showIframe" class="iframe-container">
+        <iframe 
+          src="http://localhost:5173" 
+          frameborder="0" 
+          class="embedded-iframe"
+        ></iframe>
       </div>
+      
+      <!-- DeepSeek API 密钥输入框 -->
+      <el-dialog
+        v-model="showApiKeyDialog"
+        title="输入 DeepSeek API 密钥"
+        width="500px"
+        :close-on-click-modal="false"
+        :show-close="false"
+      >
+        <el-input
+          v-model="apiKey"
+          placeholder="请输入您的 DeepSeek API 密钥"
+          show-password
+          @keyup.enter="saveApiKey"
+        />
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="apiKey = ''; showApiKeyDialog = false">取消</el-button>
+            <el-button type="primary" @click="saveApiKey">保存</el-button>
+          </span>
+        </template>
+      </el-dialog>
+      
+      <!-- 分析结果对话框 -->
+      <el-dialog
+        v-model="showResult"
+        title="分析结果"
+        width="70%"
+        :close-on-click-modal="false"
+      >
+        <div class="analysis-result" v-html="analysisResult"></div>
+        <template #footer>
+          <el-button @click="showResult = false">关闭</el-button>
+        </template>
+      </el-dialog>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-// import { proxy } from '../../vite.config.js';
-import { ref, toRaw ,getCurrentInstance} from "vue";
-import { ElMessageBox, ElMessage } from "element-plus";
-import md5 from "js-md5";
-import { Plus, ZoomIn, Delete, Download } from "@element-plus/icons";
-import { useRouter } from "vue-router";
+import { ref } from 'vue';
+import { ElMessage } from 'element-plus';
 
 export default {
-  components: {
-    Plus,
-    ZoomIn,
-    Delete,
-    Download,
-  },
-  data() {
-    const router = useRouter();
-    return {
-      inputText: "",
-      checked: ref([]),
-      dialogImageUrl: ref(""),
-      dialogVisible: ref(false),
-      disabled: ref(false),
-      listData: [
-        {
-          no: "1",
-          title: "王思聪打人赔款200万?",
-          time: "2022.5.16",
-          name: "张三",
-        },
-        {
-          no: "2",
-          title: "Tom1",
-          time: "2022.5.16",
-          name: "张三",
-        },
-        {
-          no: "3",
-          title: "Tom2",
-          time: "2022.5.16",
-          name: "张三",
-        },
-        {
-          no: "4",
-          title: "Tom3",
-          time: "2022.5.16",
-          name: "张三",
-        },
-      ],
-      drawer1: ref(false),
-      drawer2: ref(false),
-      radio1: ref("Option 1"),
-      showList: [],
-      encryptedString: "",
-      handledURL: "",
-      file: null,
-      textarea: ref(""),
-      router: "",
-      selectedFile: null,
+  name: 'Eye',
+  setup() {
+    const textarea = ref('');
+    const showResult = ref(false);
+    const analysisResult = ref('');
+    const isAnalyzing = ref(false);
+    const apiKey = ref(localStorage.getItem('deepseek_api_key') || '');
+    const showApiKeyDialog = ref(false);
+    const showIframe = ref(false);
+
+    const toggleIframe = () => {
+      showIframe.value = !showIframe.value;
     };
-  },
-  methods: {
-    onBeforeUpload(file) {
-      this.selectedFile = file; // 更新选中的文件
-      console.log(this.selectedFile);
-    },
-    // // 读取图片文件并转换为Base64格式
-    // readFileAsBase64(file) {
-    //   return new Promise((resolve, reject) => {
-    //     const reader = new FileReader();
-    //     reader.onload = () => resolve(reader.result);
-    //     reader.onerror = reject;
-    //     reader.readAsDataURL(file);
-    //   });
-    // },
 
-    // // 生成RSA公钥对
-    // generateKeyPair() {
-    //   const rsa = new JSEncrypt();
-    //   rsa.getKey();
-    //   const publicKey = rsa.getPublicKey();
-    //   const privateKey = rsa.getPrivateKey();
-    //   return { publicKey, privateKey };
-    // },
+    const saveApiKey = () => {
+      if (apiKey.value) {
+        localStorage.setItem('deepseek_api_key', apiKey.value);
+        showApiKeyDialog.value = false;
+        ElMessage.success('API 密钥已保存');
+        startAnalysis();
+      } else {
+        ElMessage.warning('请输入有效的 API 密钥');
+      }
+    };
 
-    // // 使用公钥加密数据
-    // encryptData(data, publicKey) {
-    //   const rsa = new JSEncrypt();
-    //   rsa.setPublicKey(publicKey);
-    //   const encryptedData = rsa.encrypt(data);
-    //   return encryptedData;
-    // },
-
-    handleFileChange(event) {
-      this.selectedFile = event.target.files[0];
-    },
-    uploadImage() {
-      const selectedFile = this.$refs.fileInput.files[0];
-      console.log(111, selectedFile);
-      let formData = new FormData();
-      formData.append("file", selectedFile);
-      console.log(2, formData);
-      console.log("FormData entries:");
-      for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
+    const startAnalysis = async () => {
+      // 检查 API 密钥
+      if (!apiKey.value) {
+        showApiKeyDialog.value = true;
+        return;
+      }
+      
+      if (!textarea.value || !textarea.value.trim()) {
+        ElMessage.warning('请输入要分析的内容');
+        return;
       }
 
-      axios.defaults.headers.post["Content-Type"] = "multipart/form-data";
-      const token = sessionStorage.getItem("token");
-      axios.defaults.headers.common["token"] = ` ${token}`;
-      axios
-        .post("http://124.223.59.64:80/common/analyse", formData, token)
-        .then((response) => {
-          console.log(response);
-          const data = response.data.data[0];
-          console.log('data.id:',data.id)
-          this.$router.push({
-          path: "/account/detail",
-            query: {
-              itemContent: data.content,
-              itemTitle: data.title,
-            // itemUserId: data.userId,
-              itemTime: data.time,
-              itemStatus: response.status,
-              itemId : data.id,
+      isAnalyzing.value = true;
+      
+      try {
+        // 调用 DeepSeek API
+        const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey.value}`
           },
-          params: {},
-        });
-        });
-    },
-
-    confirmClickPicture() {
-      ElMessageBox.confirm(` 确认提交 ?`)
-        .then(() => {
-          console.log(111);
-          console.log(44, this.selectedFile);
-          ff.append("file", file);
-          console.log("11111",ff);
-
-          const boundary = Math.random().toString().slice(2);
-          const token = sessionStorage.getItem("token");
-          axios.defaults.headers.common["token"] = ` ${token}`;
-          const url = `http://124.223.59.64:80/common/analyse`;
-          axios({
-            method: "post",
-            url,
-           ff ,token ,
-          })
-            .then((response) => {
-              const publicKey = response.data.publicKey;
-              console.log(response.data);
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-          drawer2.value = false;
-        })
-        .catch(() => {
-          // catch error
-        });
-      setTimeout(() => {
-        this.$router.push("/account/answer");
-      }, 1000);
-    },
-
-    handleRemove(file) {
-      console.log(toRaw(file));
-    },
-
-    handlePictureCardPreview(file) {
-      const url = file.url.split("blob:")[1];
-      this.dialogImageUrl = url;
-      this.dialogVisible = true;
-      this.file = file;
-    },
-
-    handleDownload(file) {
-      const url = file.url.split("blob:")[1];
-      console.log(url);
-      this.dialogImageUrl = url;
-      this.dialogVisible = true;
-      const f = toRaw(file);
-      console.log(f);
-      this.handledURL = md5(this.dialogImageUrl);
-      console.log(this.handledURL);
-
-      this.selectedFile = f; // 更新选中的文件
-      console.log(this.selectedFile);
-    },
-
-    handleCheckedChange() {
-      toRaw(this.checked).forEach((item, index) => {
-        this.showList.push({
-          id: index,
-          value: item,
-        });
-      });
-      this.showList = [...new Set(this.showList)];
-    },
-
-    confirmClick() {
-      ElMessageBox.confirm(` 确认提交 ?`)
-        .then(() => {
-          drawer2.value = false;
-          handleCheckedChange();
-        })
-        .catch(() => {
-          // catch error
-        });
-    },
-
-    start() {
-      // 检查文本是否为空
-      if (!this.textarea || !this.textarea.trim()) {
-        ElMessage.warning('请输入需要检测的舆情内容');
-        return;
-      }
-
-      // 显示加载提示
-      const loadingInstance = ElMessageBox.alert("", "正在检测中，请稍候...", {
-        confirmButtonText: "OK",
-        showConfirmButton: false,
-        closeOnClickModal: false,
-        closeOnPressEscape: false,
-      });
-
-      console.log('检测内容:', this.textarea);
-      const token = sessionStorage.getItem("token");
-      
-      // 检查token是否存在
-      if (!token) {
-        ElMessageBox.close();
-        ElMessage.warning('请先登录');
-        return;
-      }
-      
-      axios.defaults.headers.common["token"] = `${token}`;
-      
-      axios
-        .post(
-          'http://124.223.59.64:8083/checkNews',
-          { "news": this.textarea, token },
-          {headers: {
-            "AUTHORIZATION": "18e9e259-8c8a-438b-aa33-a2ef6fdff16c"
-          }}
-        )
-        .then((response) => {
-          // 关闭加载提示
-          ElMessageBox.close();
-          
-          console.log('检测结果:', response);
-          
-          // 显示结果提示
-          ElMessageBox.alert(
-            response.data.raw_response || "检测完成", 
-            `${response.data.check_status || "舆情检测结果"}`, 
-            {
-              confirmButtonText: "查看详情",
-              callback: () => {
-                // 正确获取content-length头部
-                const contentLength = response.headers['content-length'] || '';
-                
-                // 跳转到详情页面
-                this.$router.push({
-                  path: "/account/detail",
-                  query: {
-                    status: response.data.check_status || '',
-                    title: this.textarea || '',
-                    header: contentLength,
-                    type: response.request.statusText || '',
-                    content: response.data.raw_response || '',
-                  }
-                });
+          body: JSON.stringify({
+            model: 'deepseek-chat',
+            messages: [
+              {
+                role: 'user',
+                content: textarea.value
               }
-            }
-          );
-        })
-        .catch((error) => {
-          // 关闭加载提示
-          ElMessageBox.close();
-          
-          console.error('检测失败:', error);
-          
-          // 显示错误提示
-          ElMessageBox.alert(
-            error.message || "网络错误，请稍后再试", 
-            "检测失败", 
-            {
-              confirmButtonText: "确定",
-              type: "error"
-            }
-          );
+            ],
+            temperature: 0.7,
+            max_tokens: 2000
+          })
         });
-    },
-  },
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error?.message || 'API 请求失败');
+        }
+
+        const data = await response.json();
+        analysisResult.value = data.choices?.[0]?.message?.content || '未获取到有效回复';
+        showResult.value = true;
+        
+      } catch (error) {
+        console.error('分析出错:', error);
+        ElMessage.error(`分析失败: ${error.message}`);
+      } finally {
+        isAnalyzing.value = false;
+      }
+    };
+
+    return {
+      textarea,
+      showResult,
+      analysisResult,
+      isAnalyzing,
+      apiKey,
+      showApiKeyDialog,
+      showIframe,
+      toggleIframe,
+      saveApiKey,
+      startAnalysis
+    };
+  }
 };
 </script>
 
 <style scoped>
+.iframe-container {
+  width: 100%;
+  height: 500px;
+  margin: 20px 0;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.embedded-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.begin {
+  width: 10%;
+  padding: 12px 0;
+  font-size: 16px;
+}
+
+/* 保留原有的样式 */
 .question {
   width: 700px;
   height: 100px;

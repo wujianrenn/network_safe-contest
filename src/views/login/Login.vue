@@ -1,5 +1,6 @@
 <template>
   <div class="login">
+    <h1 class="login-title">舆情分析系统的开发与应用</h1>
     <el-card class="login_center">
       <template #header>
         <div class="card_header">
@@ -192,18 +193,34 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+:deep(.login-title) {
+  color: white;
+  font-size: 38px;
+  font-weight: bold;
+  text-align: center;
+  margin: 50px 0 20px 0;
+  padding: 20px 0 0 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  z-index: 1;
+}
+
 .login {
   width: 100vw;
-  height: 100vh;
-  background-image: url("../../assets/img/login_new.png");
+  min-height: 100vh;
+  background-image: url("../../assets/img/login.jpg");
   background-size: cover;
+  background-position: center;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  overflow: hidden;
+  justify-content: flex-start;
+  padding: 0;
+  margin: 0;
+  position: relative;
   .login_center {
-    width: 396px;
-    height: auto;
+    width: 400px;
+    margin: 100px auto 0;
   }
 
   .card_header {

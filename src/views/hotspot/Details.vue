@@ -28,9 +28,14 @@
           <div class="item-rank">{{ item.no }}</div>
           <div class="item-title">{{ item.title }}</div>
           <div class="item-actions">
-            <span :style="{ color: changeColor }" class="item-heat">{{ item.number }}</span>
-            <span class="like-btn" @click.stop="good(item.id)">
-              <img :src="imgSrc" alt="点赞" class="like-icon" />
+            <span class="item-heat">
+              <el-icon 
+                :class="['flame-icon', { 'active': item.liked }]" 
+                @click.stop="toggleLike(item)"
+              >
+                <component :is="item.liked ? 'StarFilled' : 'Star'" />
+              </el-icon>
+              <span :class="{ 'active-text': item.liked }">{{ item.number || 0 }}</span>
             </span>
           </div>
         </div>
@@ -43,57 +48,127 @@
 import axios from "axios";
 import { toRaw } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { Star, StarFilled } from "@element-plus/icons-vue";
+
+
 
 export default {
   data() {
-    const listData = [];
+    // 初始化五条假数据
+    const listData = [
+      {
+        no: 1,
+        title: "某明星涉嫌偷税漏税事件引发热议",
+        time: "2025-05-30 12:30:45",
+        name: "热点观察员",
+        id: "101",
+        liked: false,
+        number: 22
+      },
+      {
+        no: 2,
+        title: "新冠疫情最新变种引发全球关注",
+        time: "2025-05-30 10:15:22",
+        name: "医疗观察",
+        id: "102",
+        liked: false,
+        number: 18
+      },
+      {
+        no: 3,
+        title: "某高校学术不端事件曝光引发教育界反思",
+        time: "2025-05-29 18:45:36",
+        name: "教育观察",
+        id: "103",
+        liked: false,
+        number: 15
+      },
+      {
+        no: 4,
+        title: "国际贸易摩擦升级，多国发表联合声明",
+        time: "2025-05-29 15:20:10",
+        name: "国际视角",
+        id: "104",
+        liked: false,
+        number: 10
+      },
+      {
+        no: 5,
+        title: "某网红直播带货虚假宣传被罚款500万",
+        time: "2025-05-28 20:10:05",
+        name: "消费监督",
+        id: "105",
+        liked: false,
+        number: 6
+      }
+    ];
+    
     return {
       ltext: "",
       listData,
       startNumber: 0,
-      imgSrc:
-        "https://img.51miz.com/preview/element/00/01/04/61/E-1046130-B357714A.jpg",
       clicked: false,
-      changeColor: "black",
-      change: false,
       number: '',
+      useRealData: false, // 控制是否使用真实数据
     };
   },
   methods: {
     handleButtonClick() {
+      // 如果不使用真实数据，则保留假数据
+      if (!this.useRealData) {
+        ElMessage.success('已加载热点数据');
+        return;
+      }
+      
+      // 使用真实数据时，清空之前的数据
+      this.listData = [];
+      
       const token = sessionStorage.getItem("token");
-      console.log("1");
-      axios.defaults.headers.common["token"] = ` ${token}`;
-      console.log(token);
+      if (!token) {
+        ElMessage.warning('请先登录');
+        return;
+      }
+      
+      axios.defaults.headers.common["token"] = `${token}`;
       const url = "http://124.223.59.64:80/opinion/show10";
-      console.log(url);
+      
       axios
         .get(url, token)
         .then((response) => {
-          console.log(response);
+          console.log('获取热点列表:', response);
+          if (response.data.code !== 1) {
+            ElMessage.error("获取热点列表失败，请重试!");
+            return;
+          }
+          
           response.data.data.forEach((dataItem, index) => {
+            // 添加基本数据
             this.listData.push({
               no: index + 1,
               title: dataItem.title,
               time: dataItem.updateTime,
               name: dataItem.nickName,
               id: dataItem.id,
+              liked: false, // 初始化点赞状态
+              number: 0 // 初始化热度数值
             });
+            
+            // 获取每个舆情的点赞数
             const url2 = 'http://124.223.59.64:80/opinion/showLike/' + dataItem.id;
-        axios
-          .get(url2, token)
-          .then((response) => {
-            const likeCount = response.data.data;
-            // Update the corresponding listData item with the like count
-            this.listData[index].number = likeCount;
-          if (response.data.code != 1) {
-            alert("网络出现问题，请重试!");
-            return;
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+            axios
+              .get(url2, token)
+              .then((response) => {
+                if (response.data.code === 1) {
+                  const likeCount = response.data.data;
+                  // 更新对应的热度数值
+                  this.listData[index].number = likeCount;
+                } else {
+                  console.warn("获取点赞数失败:", dataItem.id);
+                }
+              })
+              .catch((error) => {
+                console.error("获取点赞数错误:", error);
+              });
           });
           console.log(toRaw(this.listData), "111");
           if (response.data.code != 1) {
@@ -144,50 +219,87 @@ export default {
           console.error(error);
         });
     },
-    good(id) {
-      // this.startNumber = this.startNumber + 
-      console.log('id:', id)
+    // 点赞功能
+    toggleLike(item) {
+      console.log('点赞舆情ID:', item.id);
+      
+      // 如果item没有liked属性，初始化为false
+      if (item.liked === undefined) {
+        this.$set(item, 'liked', false);
+      }
+      
+      // 切换点赞状态
+      item.liked = !item.liked;
+      
+      // 更新热度数值
+      if (item.number === undefined) {
+        item.number = 0;
+      }
       
       let value = 0;
-      if (!this.clicked) {
-        this.imgSrc =
-          "https://tse1-mm.cn.bing.net/th/id/OIP-C.JPL7jGmZwXlhWiDpEEilJwHaFo?w=278&h=211&c=7&r=0&o=5&dpr=1.5&pid=1.7";
-      } else {
-        this.imgSrc =
-          "https://img.51miz.com/preview/element/00/01/04/61/E-1046130-B357714A.jpg";
-      }
-      this.clicked = !this.clicked;
-
-      
-      const opinionid = 123;
-      if (!this.change) {
-        this.changeColor = "red";
-        this.startNumber = this.startNumber + 1
+      if (item.liked) {
+        item.number++;
         value = 1;
       } else {
-        this.changeColor = "black";
-        this.startNumber = this.startNumber -1
+        item.number--;
         value = 0;
       }
-      this.change = !this.change;
-
-      //接口
-      const startNumber = this.startNumber;
+      
+      // 如果不使用真实数据，则只更新本地状态
+      if (!this.useRealData) {
+        // 点赞成功提示
+        if (item.liked) {
+          ElMessage.success('点赞成功');
+        } else {
+          ElMessage.info('已取消点赞');
+        }
+        return;
+      }
+      
+      // 调用接口
       const token = sessionStorage.getItem("token");
-      axios.defaults.headers.common["token"] = ` ${token}`;
+      if (!token) {
+        ElMessage.warning('请先登录后再点赞');
+        return;
+      }
+      
+      axios.defaults.headers.common["token"] = `${token}`;
       const url = "http://124.223.59.64:80/opinion/like";
-      const opinionId = id;
+      const opinionId = item.id;
+      
       axios
-        .put(url, {value, opinionId},token,)
+        .put(url, {value, opinionId}, token)
         .then((response) => {
           console.log(response.data);
-          if (response.data.code != 1) {
-            alert("网络出现问题，请重试!");
+          if (response.data.code !== 1) {
+            ElMessage.error("点赞失败，请重试!");
+            // 恢复原状态
+            item.liked = !item.liked;
+            if (item.liked) {
+              item.number++;
+            } else {
+              item.number--;
+            }
             return;
+          }
+          
+          // 点赞成功提示
+          if (item.liked) {
+            ElMessage.success('点赞成功');
+          } else {
+            ElMessage.info('已取消点赞');
           }
         })
         .catch((error) => {
           console.error(error);
+          ElMessage.error("网络错误，请稍后再试");
+          // 恢复原状态
+          item.liked = !item.liked;
+          if (item.liked) {
+            item.number++;
+          } else {
+            item.number--;
+          }
         });
     },
   },
@@ -503,5 +615,32 @@ export default {
   border-radius: 12px;
   margin-right: 15px;
   padding: 5px 5px 5px 15px;
+}
+/* 火焰图标样式 */
+.flame-icon {
+  cursor: pointer;
+  font-size: 20px;
+  color: #909399;
+  transition: all 0.3s;
+  margin-right: 5px;
+}
+
+.flame-icon:hover {
+  transform: scale(1.2);
+}
+
+.flame-icon.active {
+  color: #f56c6c;
+}
+
+.active-text {
+  color: #f56c6c;
+  font-weight: bold;
+}
+
+.item-heat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
