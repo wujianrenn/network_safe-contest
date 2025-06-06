@@ -200,7 +200,7 @@
   .login {
     width: 100vw;
     height: 100vh;
-    background-image: url("../../assets/img/login_new.png");
+    background-image: url("../../assets/img/login.jpg");
     background-size: cover;
     display: flex;
     justify-content: center;
